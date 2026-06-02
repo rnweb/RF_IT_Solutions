@@ -1,0 +1,146 @@
+# ============================================================================
+# RF IT Solutions — MkDocs Configuration
+# ============================================================================
+#
+# Static corporate website built with Material for MkDocs,
+# deployed to GitHub Pages via GitHub Actions.
+#
+# Local development:
+#   pip install mkdocs-material
+#   mkdocs serve
+#
+# Production build:
+#   mkdocs build
+#
+# ============================================================================
+
+site_name: "RF IT Solutions - Enterprise Architecture"
+site_description: "Engineering Resilient Data Foundations and Enterprise-Scale AI Infrastructure."
+site_author: "Rene Fernandez & Andrea Fernandez"
+site_url: ""
+
+repo_url: ""
+repo_name: "RF IT Solutions"
+
+# ---------------------------------------------------------------------------
+# Theme — Material for MkDocs (corporate indigo/blue palette)
+# ---------------------------------------------------------------------------
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+  logo: ""
+  favicon: ""
+  language: en
+
+# ---------------------------------------------------------------------------
+# Markdown extensions
+# ---------------------------------------------------------------------------
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# ---------------------------------------------------------------------------
+# Plugins
+# ---------------------------------------------------------------------------
+plugins:
+  - search
+
+# ---------------------------------------------------------------------------
+# Navigation — Corporate site structure
+# ---------------------------------------------------------------------------
+nav:
+  - Home: README.md
+
+  - Executive Leadership:
+      - Principal Architect & Founder: BIOGRAPHY.md
+
+  - Capabilities & Expertise:
+      - Sector Track Record: SECTOR_EXPERTISE.md
+      - Semantic Layers & Data Virtualization: services/semantic-layers.md
+      - Cloud & AI Infrastructure: services/cloud-infra-ai.md
+      - SRE & Observability: services/sre-observability.md
+      - Agile Delivery & Product Governance: services/product-delivery-agile.md
+
+  - Enterprise Case Studies:
+      - case-studies/ENTERPRISE_CASE_STUDIES.md
+
+  - Engineering Blueprints:
+      - Architecture-as-Code Catalog: blueprints/README.md
+      - Semantic Layer Deep Dive: case-studies/enterprise-semantic-layer-matured.md
+      - Cloud SRE Deep Dive: case-studies/cloud-migration-gitops-automation.md
+
+# ---------------------------------------------------------------------------
+# Extra configuration
+# ---------------------------------------------------------------------------
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: ""
+      name: GitHub
+  generator: false
+
+# ---------------------------------------------------------------------------
+# Custom CSS — corporate styling overrides
+# ---------------------------------------------------------------------------
+extra_css:
+  - stylesheets/extra.css

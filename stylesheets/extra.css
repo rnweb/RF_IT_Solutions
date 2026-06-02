@@ -1,0 +1,27 @@
+/* RF IT Solutions — Corporate Styling Overrides */
+
+/* Brand accent refinements */
+.md-header {
+  background-color: #1a237e;
+}
+
+/* Table styling */
+.md-typeset table:not([class]) {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: #e8eaf6;
+  font-weight: 700;
+}
+
+/* Admonition defaults — subtle corporate tone */
+.md-typeset .admonition {
+  border-radius: 4px;
+}
+
+/* Navigation tab active indicator */
+.md-tabs__link--active {
+  font-weight: 600;
+}
