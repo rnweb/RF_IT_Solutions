@@ -35,6 +35,7 @@ Our engagements are grounded in deterministic engineering — every deployment i
 | [Cloud & AI Platform Architecture](services/cloud-infra-ai.md) | Design and operate secure, production-grade cloud environments on AWS/GCP. Kubernetes-native orchestration (EKS), deterministic GitOps delivery (Argo CD), and hardened infrastructure-as-code (Terraform). |
 | [SRE & Glass-Box Observability](services/sre-observability.md) | End-to- end telemetry frameworks encompassing Datadog proxy architectures, distributed tracing, and performance auditing via K6. Specialized AI workload KPIs — Time-to-First-Token (TTFT), SSE streaming latency, GPU utilization efficiency. |
 | [Data Product Management & Agile Delivery Governance](services/product-delivery-agile.md) | Full product lifecycle ownership — from discovery and business case mapping to backlog serialization and sprint execution. Drives predictable release cadences and frictionless stakeholder alignment for data platform investments. |
+| [Engagement Model & Operational Philosophy](services/engagement-model.md) | Lean boutique delivery — elastic specialist teams, strategic advisory over infinite maintenance, and uncompromising excellence in every architectural engagement. |
 
 ---
 

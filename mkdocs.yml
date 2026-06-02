@@ -117,6 +117,7 @@ nav:
       - Cloud & AI Infrastructure: services/cloud-infra-ai.md
       - SRE & Observability: services/sre-observability.md
       - Agile Delivery & Product Governance: services/product-delivery-agile.md
+      - Engagement Model: services/engagement-model.md
 
   - Enterprise Case Studies:
       - case-studies/ENTERPRISE_CASE_STUDIES.md
