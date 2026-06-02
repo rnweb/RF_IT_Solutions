@@ -19,7 +19,7 @@ site_description: "Engineering Resilient Data Foundations and Enterprise-Scale A
 site_author: "Rene Fernandez & Andrea Fernandez"
 
 docs_dir: docs
-site_dir: docs/_site
+site_dir: _site
 
 # ---------------------------------------------------------------------------
 # Theme — Material for MkDocs (corporate indigo/blue palette)
