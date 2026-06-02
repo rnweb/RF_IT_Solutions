@@ -8,13 +8,17 @@
 
 ## Executive Summary
 
-RF IT Solutions delivers **end-to-end execution** — combining production-grade technical architecture with agile product lifecycle leadership to ensure scalable, business-aligned platform outcomes. Our capabilities span **intelligent semantic abstraction**, **GitOps-driven cloud platforms**, **full-stack SRE observability**, and **data product management & agile delivery governance** for Fortune 500 enterprises and high-growth technology organizations.
+RF IT Solutions is a **newly incorporated boutique consultancy**, powered by over **15 years of proven Principal Architecture and Product Leadership experience**. We bring the agility and dedicated focus of a modern boutique, backed by a multi-decade track record of mission-critical enterprise execution across Fortune 500 environments.
 
-Our engagements are grounded in deterministic engineering — every deployment is versioned, every metric is instrumented, and every architecture decision is documented as code. We do not deliver reports; we deliver **measurable operational leverage** and **predictable value realization**.
+Every engagement is **Principal-led**. Clients work directly with the architects and product strategists who designed the systems — not with intermediaries, not with junior staff, and not with account managers layering overhead between vision and delivery.
+
+Our capabilities span **intelligent semantic abstraction**, **GitOps-driven cloud platforms**, **full-stack SRE observability**, and **data product management & agile delivery governance** — delivered with the precision of a specialist and the accountability of a founder.
 
 ### Our Engagement Model
 
-RF IT Solutions operates as a **lean, dynamic boutique consultancy** — not a traditional staffing firm with heavy benches. We maintain an elite core of Principal Architects and Product Leaders, scaling **elastic, on-demand specialized teams** tailored precisely to each client's architectural challenge. This model eliminates the overhead of traditional consulting while delivering tier-1 enterprise know-how, surgical precision, and continuous strategic advisory at a highly competitive cost-to-value ratio.
+RF IT Solutions operates as a **lean, founder-led boutique consultancy** — not a traditional staffing firm with heavy benches. We maintain an elite core of Principal Architects and Product Leaders, scaling **elastic, on-demand specialized teams** tailored precisely to each client's architectural challenge. This model eliminates the overhead of traditional consulting while delivering tier-1 enterprise know-how, surgical precision, and continuous strategic advisory at a highly competitive cost-to-value ratio.
+
+> *Clients do not hire an agency. They hire the Principal Architect — directly.*
 
 [Learn more about our engagement model →](services/engagement-model.md)
 
