@@ -12,6 +12,12 @@ RF IT Solutions delivers **end-to-end execution** — combining production-grade
 
 Our engagements are grounded in deterministic engineering — every deployment is versioned, every metric is instrumented, and every architecture decision is documented as code. We do not deliver reports; we deliver **measurable operational leverage** and **predictable value realization**.
 
+### Our Engagement Model
+
+RF IT Solutions operates as a **lean, dynamic boutique consultancy** — not a traditional staffing firm with heavy benches. We maintain an elite core of Principal Architects and Product Leaders, scaling **elastic, on-demand specialized teams** tailored precisely to each client's architectural challenge. This model eliminates the overhead of traditional consulting while delivering tier-1 enterprise know-how, surgical precision, and continuous strategic advisory at a highly competitive cost-to-value ratio.
+
+[Learn more about our engagement model →](services/engagement-model.md)
+
 ---
 
 ## Core Competencies
@@ -35,6 +41,7 @@ Our engagements are grounded in deterministic engineering — every deployment i
 | [Cloud & AI Platform Architecture](services/cloud-infra-ai.md) | Design and operate secure, production-grade cloud environments on AWS/GCP. Kubernetes-native orchestration (EKS), deterministic GitOps delivery (Argo CD), and hardened infrastructure-as-code (Terraform). |
 | [SRE & Glass-Box Observability](services/sre-observability.md) | End-to- end telemetry frameworks encompassing Datadog proxy architectures, distributed tracing, and performance auditing via K6. Specialized AI workload KPIs — Time-to-First-Token (TTFT), SSE streaming latency, GPU utilization efficiency. |
 | [Data Product Management & Agile Delivery Governance](services/product-delivery-agile.md) | Full product lifecycle ownership — from discovery and business case mapping to backlog serialization and sprint execution. Drives predictable release cadences and frictionless stakeholder alignment for data platform investments. |
+| [Engagement Model & Operational Philosophy](services/engagement-model.md) | Lean boutique delivery — elastic specialist teams, strategic advisory over infinite maintenance, and uncompromising excellence in every architectural engagement. |
 
 ---
 

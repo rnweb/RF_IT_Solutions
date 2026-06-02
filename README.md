@@ -12,6 +12,12 @@ RF IT Solutions delivers **end-to-end execution** — combining production-grade
 
 Our engagements are grounded in deterministic engineering — every deployment is versioned, every metric is instrumented, and every architecture decision is documented as code. We do not deliver reports; we deliver **measurable operational leverage** and **predictable value realization**.
 
+### Our Engagement Model
+
+RF IT Solutions operates as a **lean, dynamic boutique consultancy** — not a traditional staffing firm with heavy benches. We maintain an elite core of Principal Architects and Product Leaders, scaling **elastic, on-demand specialized teams** tailored precisely to each client's architectural challenge. This model eliminates the overhead of traditional consulting while delivering tier-1 enterprise know-how, surgical precision, and continuous strategic advisory at a highly competitive cost-to-value ratio.
+
+[Learn more about our engagement model →](services/engagement-model.md)
+
 ---
 
 ## Core Competencies
