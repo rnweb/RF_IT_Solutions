@@ -18,8 +18,7 @@ site_name: "RF IT Solutions - Enterprise Architecture"
 site_description: "Engineering Resilient Data Foundations and Enterprise-Scale AI Infrastructure."
 site_author: "Rene Fernandez & Andrea Fernandez"
 
-docs_dir: docs
-site_dir: docs/_site
+docs_dir: .
 
 # ---------------------------------------------------------------------------
 # Theme — Material for MkDocs (corporate indigo/blue palette)
