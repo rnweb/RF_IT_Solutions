@@ -1,93 +1,140 @@
 -- ============================================================================
--- Snowflake Platform Demo — Foundation Setup
--- Session 0: Warehouses, Databases, Schemas, Base Roles
+-- Snowflake Platform Demo — Foundation Setup (Parameterized)
+-- Session 0: Roles, Warehouses, Database, Schemas, Grants
 -- ============================================================================
--- Idempotent: safe to re-run at any time.
--- Naming: BANKING_DEMO_* prefix (see snowflake-platform-demo/naming-conventions.md)
--- Execution: snowsql -f scripts/00_foundation.sql
+-- Parameterization : every object name comes from the PARAMETERS block below.
+--                    Change names there, nowhere else.
+-- Idempotency      : CREATE ... IF NOT EXISTS + guarded EXECUTE IMMEDIATE
+--                    => safe to re-run at any time.
+-- Naming source    : ../naming-conventions.md (approved mapping)
+-- Execution        : snowsql -f scripts/00_foundation.sql
+--                    (or: snow sql -f scripts/00_foundation.sql)
+-- NOTE             : schema/grant statements are built dynamically from the
+--                    parameters; validate them in the Phase 3 dry-run.
 -- ============================================================================
 
+-- ---------------------------------------------------------------------------
+-- PARAMETERS — approved banking context (single source of truth)
+-- ---------------------------------------------------------------------------
+SET db_name           = 'SUPERINTENDENCY_DEMO_DB';
+SET schema_core       = 'CORE_BANKING_SCHEMA';    -- raw ingestion layer
+SET schema_analytics  = 'RISK_ANALYTICS_SCHEMA';  -- BI / RLS / Cortex layer
+SET wh_ingestion      = 'WH_INGESTION_XSMALL';    -- Snowpipe + dbt
+SET wh_cortex         = 'WH_CORTEX_LARGE';        -- ML + Cortex LLM
+SET role_engineer     = 'FR_DATA_ENGINEER';
+SET role_analyst      = 'FR_BI_ANALYST';
+
+-- PROVISIONAL — pending approval (see ../naming-conventions.md)
+SET schema_staging    = 'STAGING_SCHEMA';         -- dbt intermediate layer
+SET schema_governance = 'GOVERNANCE_SCHEMA';      -- policies + mapping tables
+SET role_admin        = 'FR_DEMO_ADMIN';          -- agent-scoped admin role
+SET wh_app            = 'WH_APP_XSMALL';          -- Streamlit in Snowflake
+
+-- ---------------------------------------------------------------------------
+-- Roles (SECURITYADMIN creates roles and owns grants)
+-- ---------------------------------------------------------------------------
 USE ROLE SECURITYADMIN;
 
--- ---------------------------------------------------------------------------
--- Roles
--- ---------------------------------------------------------------------------
-CREATE ROLE IF NOT EXISTS BANKING_DEMO_SYSADMIN;
-CREATE ROLE IF NOT EXISTS BANKING_DEMO_SECURITYADMIN;
-CREATE ROLE IF NOT EXISTS BANKING_DEMO_ENGINEER;
-CREATE ROLE IF NOT EXISTS BANKING_DEMO_BI_ANALYST;
+CREATE ROLE IF NOT EXISTS IDENTIFIER($role_admin);
+CREATE ROLE IF NOT EXISTS IDENTIFIER($role_engineer);
+CREATE ROLE IF NOT EXISTS IDENTIFIER($role_analyst);
 
--- Role hierarchy: demo roles inherit from SYSADMIN-equivalent custom role only
-GRANT ROLE BANKING_DEMO_SYSADMIN    TO ROLE BANKING_DEMO_SECURITYADMIN;
-GRANT ROLE BANKING_DEMO_ENGINEER    TO ROLE BANKING_DEMO_SYSADMIN;
-GRANT ROLE BANKING_DEMO_BI_ANALYST  TO ROLE BANKING_DEMO_SYSADMIN;
+EXECUTE IMMEDIATE 'GRANT ROLE ' || $role_engineer || ' TO ROLE ' || $role_admin;
+EXECUTE IMMEDIATE 'GRANT ROLE ' || $role_analyst  || ' TO ROLE ' || $role_admin;
 
 -- ---------------------------------------------------------------------------
--- Warehouses
+-- Warehouses (SYSADMIN owns compute)
 -- ---------------------------------------------------------------------------
-CREATE WAREHOUSE IF NOT EXISTS BANKING_DEMO_WH
+USE ROLE SYSADMIN;
+
+CREATE WAREHOUSE IF NOT EXISTS IDENTIFIER($wh_ingestion)
     WITH WAREHOUSE_SIZE = 'XSMALL'
     AUTO_SUSPEND = 60
     AUTO_RESUME = TRUE
     INITIALLY_SUSPENDED = TRUE;
 
-CREATE WAREHOUSE IF NOT EXISTS BANKING_DEMO_TRANSFORM_WH
-    WITH WAREHOUSE_SIZE = 'XSMALL'
-    AUTO_SUSPEND = 60
-    AUTO_RESUME = TRUE
-    INITIALLY_SUSPENDED = TRUE;
-
-CREATE WAREHOUSE IF NOT EXISTS BANKING_DEMO_ML_WH
-    WITH WAREHOUSE_SIZE = 'SMALL'
+CREATE WAREHOUSE IF NOT EXISTS IDENTIFIER($wh_cortex)
+    WITH WAREHOUSE_SIZE = 'LARGE'
     AUTO_SUSPEND = 120
     AUTO_RESUME = TRUE
     INITIALLY_SUSPENDED = TRUE;
 
-CREATE WAREHOUSE IF NOT EXISTS BANKING_DEMO_APP_WH
+CREATE WAREHOUSE IF NOT EXISTS IDENTIFIER($wh_app)
     WITH WAREHOUSE_SIZE = 'XSMALL'
     AUTO_SUSPEND = 60
     AUTO_RESUME = TRUE
     INITIALLY_SUSPENDED = TRUE;
 
 -- ---------------------------------------------------------------------------
--- Databases
+-- Database & Schemas
 -- ---------------------------------------------------------------------------
-CREATE DATABASE IF NOT EXISTS BANKING_DEMO_DB;
+CREATE DATABASE IF NOT EXISTS IDENTIFIER($db_name);
 
--- ---------------------------------------------------------------------------
--- Schemas
--- ---------------------------------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS BANKING_DEMO_DB.RAW;
-CREATE SCHEMA IF NOT EXISTS BANKING_DEMO_DB.STAGING;
-CREATE SCHEMA IF NOT EXISTS BANKING_DEMO_DB.ANALYTICS;
-CREATE SCHEMA IF NOT EXISTS BANKING_DEMO_DB.ML;
-CREATE SCHEMA IF NOT EXISTS BANKING_DEMO_DB.GOVERNANCE;
+EXECUTE IMMEDIATE 'CREATE SCHEMA IF NOT EXISTS ' || $db_name || '.' || $schema_core;
+EXECUTE IMMEDIATE 'CREATE SCHEMA IF NOT EXISTS ' || $db_name || '.' || $schema_analytics;
+EXECUTE IMMEDIATE 'CREATE SCHEMA IF NOT EXISTS ' || $db_name || '.' || $schema_staging;
+EXECUTE IMMEDIATE 'CREATE SCHEMA IF NOT EXISTS ' || $db_name || '.' || $schema_governance;
 
 -- ---------------------------------------------------------------------------
 -- Grants
 -- ---------------------------------------------------------------------------
-USE ROLE BANKING_DEMO_SECURITYADMIN;
+USE ROLE SECURITYADMIN;
 
-GRANT USAGE ON DATABASE BANKING_DEMO_DB          TO ROLE BANKING_DEMO_SYSADMIN;
-GRANT USAGE ON ALL SCHEMAS IN DATABASE BANKING_DEMO_DB TO ROLE BANKING_DEMO_SYSADMIN;
+-- Database & schema usage
+EXECUTE IMMEDIATE 'GRANT USAGE ON DATABASE ' || $db_name || ' TO ROLE ' || $role_admin;
+EXECUTE IMMEDIATE 'GRANT USAGE ON DATABASE ' || $db_name || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT USAGE ON DATABASE ' || $db_name || ' TO ROLE ' || $role_analyst;
 
-GRANT USAGE ON WAREHOUSE BANKING_DEMO_WH           TO ROLE BANKING_DEMO_SYSADMIN;
-GRANT USAGE ON WAREHOUSE BANKING_DEMO_TRANSFORM_WH TO ROLE BANKING_DEMO_SYSADMIN;
-GRANT USAGE ON WAREHOUSE BANKING_DEMO_ML_WH        TO ROLE BANKING_DEMO_SYSADMIN;
-GRANT USAGE ON WAREHOUSE BANKING_DEMO_APP_WH       TO ROLE BANKING_DEMO_SYSADMIN;
+EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $db_name || '.' || $schema_core
+    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $db_name || '.' || $schema_core
+    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $db_name || '.' || $schema_staging
+    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $db_name || '.' || $schema_staging
+    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $db_name || '.' || $schema_analytics
+    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $db_name || '.' || $schema_analytics
+    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $db_name || '.' || $schema_governance
+    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $db_name || '.' || $schema_governance
+    || ' TO ROLE ' || $role_admin;
 
-GRANT USAGE ON DATABASE BANKING_DEMO_DB               TO ROLE BANKING_DEMO_ENGINEER;
-GRANT USAGE ON SCHEMA BANKING_DEMO_DB.RAW             TO ROLE BANKING_DEMO_ENGINEER;
-GRANT USAGE ON SCHEMA BANKING_DEMO_DB.STAGING         TO ROLE BANKING_DEMO_ENGINEER;
-GRANT CREATE TABLE ON SCHEMA BANKING_DEMO_DB.RAW      TO ROLE BANKING_DEMO_ENGINEER;
-GRANT CREATE TABLE ON SCHEMA BANKING_DEMO_DB.STAGING  TO ROLE BANKING_DEMO_ENGINEER;
-GRANT USAGE ON WAREHOUSE BANKING_DEMO_WH              TO ROLE BANKING_DEMO_ENGINEER;
-GRANT USAGE ON WAREHOUSE BANKING_DEMO_TRANSFORM_WH    TO ROLE BANKING_DEMO_ENGINEER;
+-- Warehouse usage
+EXECUTE IMMEDIATE 'GRANT USAGE ON WAREHOUSE ' || $wh_ingestion || ' TO ROLE ' || $role_admin;
+EXECUTE IMMEDIATE 'GRANT USAGE ON WAREHOUSE ' || $wh_ingestion || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT USAGE ON WAREHOUSE ' || $wh_cortex    || ' TO ROLE ' || $role_admin;
+EXECUTE IMMEDIATE 'GRANT USAGE ON WAREHOUSE ' || $wh_cortex    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT USAGE ON WAREHOUSE ' || $wh_cortex    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT USAGE ON WAREHOUSE ' || $wh_app       || ' TO ROLE ' || $role_admin;
+EXECUTE IMMEDIATE 'GRANT USAGE ON WAREHOUSE ' || $wh_app       || ' TO ROLE ' || $role_analyst;
 
-GRANT USAGE ON DATABASE BANKING_DEMO_DB            TO ROLE BANKING_DEMO_BI_ANALYST;
-GRANT USAGE ON SCHEMA BANKING_DEMO_DB.ANALYTICS    TO ROLE BANKING_DEMO_BI_ANALYST;
-GRANT SELECT ON ALL TABLES IN SCHEMA BANKING_DEMO_DB.ANALYTICS
-    TO ROLE BANKING_DEMO_BI_ANALYST;
-GRANT SELECT ON FUTURE TABLES IN SCHEMA BANKING_DEMO_DB.ANALYTICS
-    TO ROLE BANKING_DEMO_BI_ANALYST;
-GRANT USAGE ON WAREHOUSE BANKING_DEMO_WH           TO ROLE BANKING_DEMO_BI_ANALYST;
+-- Engineer: create objects in the ingestion / staging / analytics layers
+EXECUTE IMMEDIATE 'GRANT CREATE TABLE ON SCHEMA ' || $db_name || '.' || $schema_core
+    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT CREATE TABLE ON SCHEMA ' || $db_name || '.' || $schema_staging
+    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT CREATE TABLE ON SCHEMA ' || $db_name || '.' || $schema_analytics
+    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT CREATE TABLE ON SCHEMA ' || $db_name || '.' || $schema_governance
+    || ' TO ROLE ' || $role_engineer;
+EXECUTE IMMEDIATE 'GRANT CREATE SCHEMA ON DATABASE ' || $db_name
+    || ' TO ROLE ' || $role_admin;
+
+-- Analyst: read-only on current and future tables (masking applies at read time)
+EXECUTE IMMEDIATE 'GRANT SELECT ON ALL TABLES IN SCHEMA ' || $db_name || '.' || $schema_core
+    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT SELECT ON FUTURE TABLES IN SCHEMA ' || $db_name || '.' || $schema_core
+    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT SELECT ON ALL TABLES IN SCHEMA ' || $db_name || '.' || $schema_staging
+    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT SELECT ON FUTURE TABLES IN SCHEMA ' || $db_name || '.' || $schema_staging
+    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT SELECT ON ALL TABLES IN SCHEMA ' || $db_name || '.' || $schema_analytics
+    || ' TO ROLE ' || $role_analyst;
+EXECUTE IMMEDIATE 'GRANT SELECT ON FUTURE TABLES IN SCHEMA ' || $db_name || '.' || $schema_analytics
+    || ' TO ROLE ' || $role_analyst;
+
+SELECT 'Foundation setup complete' AS STATUS;

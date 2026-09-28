@@ -8,14 +8,14 @@
 > names and your proposed banking-specific names (e.g., `DEMO_DB` ->
 > `SUPERINTENDENCY_DEMO_DB`).
 
-## Target Quickstarts
+## Target Quickstarts (approved)
 
 | Area | Repository |
 |------|------------|
-| Data Engineering / Lakehouse | `github.com/Snowflake-Labs/sfguide-getting-started-snowpark-python` (or the data engineering guide) |
-| dbt | `github.com/Snowflake-Labs/sfguide-dbt-snowflake-*` |
-| Cortex AI / RAG | `github.com/Snowflake-Labs/sfguide-cortex-*` |
-| Data Governance | `github.com/Snowflake-Labs/sfguide-*governance*` |
+| Data Engineering / Snowpark (Session 1) | `https://github.com/Snowflake-Labs/sfguide-getting-started-dataengineering-ml-snowpark-python` |
+| dbt + Snowflake (Session 1) | `https://github.com/Snowflake-Labs/getting-started-with-dbt-on-snowflake` |
+| Cortex Document Chatbot / Native App (Session 2) | `https://github.com/Snowflake-Labs/sfguide-build-chatbot-with-snowflake-native-app-snowflake-cortex` |
+| Data Governance / Horizon (Session 3) | `https://github.com/Snowflake-Labs/sfguide-getting-started-with-horizon-data-governance-in-snowflake` |
 
 Clone destination: `snowflake-platform-demo/quickstarts/` (cloned content is git-ignored).
 

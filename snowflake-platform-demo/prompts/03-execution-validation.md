@@ -20,5 +20,5 @@
 ## Expected Output
 
 - Execution log per script with success/failure status.
-- Masking validation results: `ACCOUNTADMIN` → plaintext, `BANKING_DEMO_BI_ANALYST` → masked.
+- Masking validation results: `ACCOUNTADMIN` → plaintext, `FR_BI_ANALYST` → masked.
 - Validation summary table of row counts and asset checks.

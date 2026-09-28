@@ -17,7 +17,8 @@ OpenCode-driven automation strategy. Full architecture and guardrails are docume
 ```
 snowflake-platform-demo/
 ├── README.md                      # This file — overview and workflow
-├── naming-conventions.md          # Original -> banking persona object mapping (to be approved)
+├── naming-conventions.md          # APPROVED original -> banking persona mapping
+├── phase1-repository-scan.md      # Scan report: hardcoded names in cloned Quickstarts
 ├── prompts/                       # Structured prompts fed to the OpenCode agent
 │   ├── 01-workspace-init-cloning.md
 │   ├── 02-refactoring-parameterization.md
@@ -25,10 +26,10 @@ snowflake-platform-demo/
 ├── quickstarts/                   # Clone target for Snowflake-Labs repos (not committed)
 │   └── README.md
 └── scripts/
-    ├── 00_foundation.sql          # Warehouses, databases, schemas, base roles (idempotent)
+    ├── 00_foundation.sql          # Parameterized warehouses/DB/schemas/roles (idempotent)
     ├── 99_demo_reset.sql          # Environment reset between dry-runs and presentations
     ├── session-1-lakehouse/       # Snowpipe, stages, dbt initialization
-    ├── session-2-ai-analytics/    # Snowpark ML, Cortex RAG, Streamlit
+    ├── session-2-ai-analytics/    # Snowpark ML, Cortex RAG, app deployment
     └── session-3-governance/      # Masking policies, row-level security
 ```
 

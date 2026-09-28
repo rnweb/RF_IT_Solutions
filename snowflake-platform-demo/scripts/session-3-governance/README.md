@@ -4,10 +4,11 @@ Assets for the third demonstration session.
 
 ## Scope
 
-- Dynamic Data Masking on `CREDIT_CARD_NUMBER` and `NATIONAL_ID` columns
-- Row-Level Security via a role-mapping table and row access policy
-- Grants demonstrating masked (`BANKING_DEMO_BI_ANALYST`) vs. full (`ACCOUNTADMIN`)
-  visibility
+- Dynamic Data Masking on `CLIENT_PROFILE_DIM.NATIONAL_ID` and
+  `CREDIT_CARD_TRANSACTIONS.CREDIT_CARD_NUMBER`
+- Row-Level Security via a role-mapping table in `GOVERNANCE_SCHEMA`
+- Access matrix: `ACCOUNTADMIN`/`FR_DEMO_ADMIN` see plaintext,
+  `FR_BI_ANALYST` sees masked data
 
 ## Planned Files
 
@@ -21,10 +22,19 @@ Assets for the third demonstration session.
 ## Prerequisites
 
 - Sessions 1–2 completed (tables with PII columns exist)
-- Role: `BANKING_DEMO_SECURITYADMIN`
+- Role: `FR_DEMO_ADMIN` / `SECURITYADMIN`, warehouses: `WH_CORTEX_LARGE`
+
+## Quickstart Source (cloned, immutable)
+
+| Clone | Original |
+|-------|----------|
+| `quickstarts/horizon-data-governance` | `sfguide-getting-started-with-horizon-data-governance-in-snowflake` |
+
+Hardcoded-name mapping (`HRZN_*` → banking targets): see
+[phase1-repository-scan.md](../../phase1-repository-scan.md).
 
 ## Demo Talking Points
 
 1. Same table, two roles → two different result sets, zero application changes.
 2. Masking policies survive BI tool queries (policy follows the column).
-3. RLS filters rows by business unit/region for the analyst persona.
+3. RLS filters rows by business unit for the analyst persona.

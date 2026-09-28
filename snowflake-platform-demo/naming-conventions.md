@@ -1,61 +1,43 @@
 # Naming Conventions — Banking Persona Mapping
 
-Proposed mapping of generic Quickstart objects to the banking demo persona.
-**Status: pending approval** — the agent must not execute refactoring until this table is signed off.
+**Status: APPROVED** — this is the single source of truth for object naming.
+All SQL/Python assets must use these names. Originals in `quickstarts/` stay untouched
+(cloned repos are immutable source of truth; refactored copies live in `scripts/`).
 
-Prefix standard: all demo objects use the `BANKING_DEMO_` prefix to avoid collisions with
-existing objects in the Snowflake tenant.
+## Approved Mapping
 
-## Databases
+| Generic Quickstart Object | Banking Demo Target | Purpose / Justification |
+| :--- | :--- | :--- |
+| `QUICKSTART_DB` / `DEMO_DB` | `SUPERINTENDENCY_DEMO_DB` | Primary database housing all session assets. |
+| `RETAIL_SCHEMA` / `SALES` | `CORE_BANKING_SCHEMA` | Raw ingestion layer for transactional data. |
+| `ANALYTICS_SCHEMA` | `RISK_ANALYTICS_SCHEMA` | Transformed layer for BI, RLS, and Cortex. |
+| `CUSTOMER_TABLE` | `CLIENT_PROFILE_DIM` | Target for Dynamic Data Masking (SSN/National ID). |
+| `ORDERS_TABLE` | `CREDIT_CARD_TRANSACTIONS` | High-volume transactional fact table. |
+| `DATA_ENGINEER_ROLE` | `FR_DATA_ENGINEER` | Functional role mapping for pipeline creation. |
+| `ANALYST_ROLE` | `FR_BI_ANALYST` | Functional role to test masking policies (masked view). |
+| `COMPUTE_WH` | `WH_INGESTION_XSMALL` | Compute dedicated to Snowpipe and dbt runs. |
+| `ANALYTICS_WH` | `WH_CORTEX_LARGE` | Compute allocated for ML and Cortex LLM queries. |
 
-| Original (Quickstart) | Banking Persona | Notes |
-|-----------------------|-----------------|-------|
-| `QUICKSTART_DB` | `BANKING_DEMO_DB` | Main demo database |
-| `DEMO_DB` | `SUPERINTENDENCY_DEMO_DB` | Alternate proposal if a single consolidated DB is preferred |
-| `SNOWFLAKE_SAMPLE_DATA` | _(unchanged)_ | Public sample data — read-only |
+## Derived Objects — PROVISIONAL (pending approval)
 
-## Schemas
+Required to complete `scripts/00_foundation.sql`; not covered by the approved table.
+Flagged as provisional wherever they appear in scripts.
 
-| Original | Banking Persona |
-|----------|-----------------|
-| `RAW` | `RAW` |
-| `STAGING` | `STAGING` |
-| `ANALYTICS` | `ANALYTICS` |
-| `ML` | `ML` |
-| `GOVERNANCE` | `GOVERNANCE` |
+| Generic / Need | Proposed Target | Purpose / Justification |
+| :--- | :--- | :--- |
+| dbt intermediate layer | `STAGING_SCHEMA` | dbt requires a staging schema between raw and analytics. |
+| Policies & mapping tables | `GOVERNANCE_SCHEMA` | Masking/row-access policies and role-mapping tables (Session 3). |
+| Agent-scoped admin role | `FR_DEMO_ADMIN` | Scoped replacement for ACCOUNTADMIN per security guardrails. |
+| Streamlit compute | `WH_APP_XSMALL` | Session 2 app compute, separated from WH_CORTEX_LARGE. |
 
-## Warehouses
+> Machine-learning artifacts (feature tables, trained models, embeddings) live in
+> `RISK_ANALYTICS_SCHEMA` — covered by the approved "BI, RLS, and Cortex" purpose.
 
-| Original | Banking Persona | Size |
-|----------|-----------------|------|
-| `COMPUTE_WH` | `BANKING_DEMO_WH` | X-Small (default) |
-| `TRANSFORM_WH` | `BANKING_DEMO_TRANSFORM_WH` | X-Small |
-| `ML_WH` | `BANKING_DEMO_ML_WH` | Small |
-| `STREAMLIT_WH` | `BANKING_DEMO_APP_WH` | X-Small |
+## Usage Rules
 
-## Roles
-
-| Original | Banking Persona | Scope |
-|----------|-----------------|-------|
-| `ACCOUNTADMIN` | _(never used directly by agent)_ | — |
-| `SYSADMIN` | `BANKING_DEMO_SYSADMIN` | Owns demo DBs/warehouses |
-| `SECURITYADMIN` | `BANKING_DEMO_SECURITYADMIN` | Owns grants/policies |
-| `BI_ANALYST` | `BANKING_DEMO_BI_ANALYST` | Masked read access |
-| `ENGINEER` | `BANKING_DEMO_ENGINEER` | Ingestion & transformation |
-
-## Tables & Columns (semantic translation)
-
-| Original | Banking Persona |
-|----------|-----------------|
-| `RETAIL_SALES` | `CREDIT_CARD_TRANSACTIONS` |
-| `CUSTOMERS` | `CUSTOMERS` |
-| `SSN` | `NATIONAL_ID` |
-| `CREDIT_CARD` | `CREDIT_CARD_NUMBER` |
-| `PRODUCTS` | `BANKING_PRODUCTS` |
-
-## Session Contexts
-
-| Original | Banking Persona |
-|----------|-----------------|
-| `SALES_DB.PUBLIC` | `BANKING_DEMO_DB.RAW` |
-| Retail/GDP demo data | Financial/banking datasets (transactions, customers, regulatory docs) |
+1. **Never** reference `QUICKSTART_*`, `DEMO_*`, `RETAIL_*`, `ANALYTICS_WH`, etc. in
+   project scripts.
+2. Every object name in `scripts/*.sql` comes from the `PARAMETERS` block of
+   [`00_foundation.sql`](scripts/00_foundation.sql) — change names there, nowhere else.
+3. Functional roles use the `FR_` prefix; compute uses the `WH_` prefix; database and
+   schema names are uppercase with underscores.

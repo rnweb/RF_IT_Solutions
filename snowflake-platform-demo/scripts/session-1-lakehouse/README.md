@@ -5,9 +5,10 @@ Assets for the first demonstration session.
 ## Scope
 
 - External stage + Snowpipe configuration pulling public financial datasets (AWS S3/GCS)
-- Raw landing zone in `BANKING_DEMO_DB.RAW` (`CREDIT_CARD_TRANSACTIONS`, `CUSTOMERS`)
+- Raw landing zone in `SUPERINTENDENCY_DEMO_DB.CORE_BANKING_SCHEMA`
+  (`CREDIT_CARD_TRANSACTIONS`, `CLIENT_PROFILE_DIM`)
 - dbt project initialization with automated `profiles.yml`
-- `dbt build` to populate staging/analytics transformation layers
+- `dbt build` populating `STAGING_SCHEMA` → `RISK_ANALYTICS_SCHEMA`
 
 ## Planned Files
 
@@ -21,9 +22,14 @@ Assets for the first demonstration session.
 ## Prerequisites
 
 - `scripts/00_foundation.sql` executed successfully
-- Role: `BANKING_DEMO_ENGINEER`, warehouse: `BANKING_DEMO_TRANSFORM_WH`
+- Role: `FR_DATA_ENGINEER`, warehouse: `WH_INGESTION_XSMALL`
 
-## Source Quickstarts
+## Quickstart Sources (cloned, immutable)
 
-_Soon to be cloned under `snowflake-platform-demo/quickstarts/` (see
-[prompt 1](../prompts/01-workspace-init-cloning.md))._
+| Clone | Original |
+|-------|----------|
+| `quickstarts/dataengineering-ml-snowpark` | `sfguide-getting-started-dataengineering-ml-snowpark-python` |
+| `quickstarts/dbt-on-snowflake` | `getting-started-with-dbt-on-snowflake` |
+
+Hardcoded-name mapping for these repos: see
+[phase1-repository-scan.md](../../phase1-repository-scan.md).

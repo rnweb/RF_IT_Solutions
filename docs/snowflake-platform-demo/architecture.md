@@ -27,7 +27,7 @@ foundational assumptions must be established:
 - **Parameterization:** The agent will not blindly execute downloaded scripts. It must
   intelligently parse the Quickstart SQL/Python files and abstract hardcoded values
   (e.g., database names, roles, warehouses) into standardized variables matching the
-  banking context (e.g., renaming `QUICKSTART_DB` to `BANKING_DEMO_DB`).
+  banking context (e.g., renaming `QUICKSTART_DB` to `SUPERINTENDENCY_DEMO_DB`).
 
 ## 2. System Needs & Prerequisites
 
