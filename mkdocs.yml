@@ -127,6 +127,10 @@ nav:
       - Semantic Layer Deep Dive: case-studies/enterprise-semantic-layer-matured.md
       - Cloud SRE Deep Dive: case-studies/cloud-migration-gitops-automation.md
 
+  - Snowflake Platform Demo:
+      - Overview: snowflake-platform-demo/README.md
+      - Architecture & Automation Strategy: snowflake-platform-demo/architecture.md
+
 # ---------------------------------------------------------------------------
 # Extra configuration
 # ---------------------------------------------------------------------------
