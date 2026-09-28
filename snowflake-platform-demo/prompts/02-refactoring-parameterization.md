@@ -2,9 +2,9 @@
 
 > Apply the approved banking-specific naming conventions across all SQL and Python files
 > in the cloned repositories. Ensure all scripts are idempotent by utilizing
-> `CREATE OR REPLACE`. Consolidate the foundational infrastructure creation (Warehouses,
-> Databases, Schemas, base Roles) into a single file named `00_foundation.sql`. Confirm
-> when this file is ready.
+> `CREATE OR REPLACE`. Foundation infrastructure (Warehouses, Databases, Schemas, Roles)
+> is managed as Terraform in `snowflake-platform-demo/terraform/` — do **not** create it
+> from SQL. Confirm when the refactored data/logic scripts are ready.
 
 ## Preconditions
 
@@ -14,12 +14,17 @@
 ## Rules
 
 - Never execute scripts during this phase — refactoring only.
+- **Infrastructure (DBs, schemas, warehouses, roles, grants, stages, policies) belongs in
+  Terraform only** — strip `CREATE DATABASE/SCHEMA/ROLE/WAREHOUSE/GRANT` statements from
+  refactored scripts; they are already provisioned by `terraform/`.
+- Refactored scripts keep only data & logic: loads, transforms, models, apps.
 - Use `CREATE OR REPLACE` / `CREATE ... IF NOT EXISTS` everywhere for idempotency.
-- Abstract hardcoded values into variables at the top of each script.
-- Foundation output path: `snowflake-platform-demo/scripts/00_foundation.sql`.
+- Abstract hardcoded values into variables at the top of each script, matching
+  `terraform/terraform.tfvars`.
 
 ## Expected Output
 
 1. Refactored copies of the Quickstart scripts (keep originals untouched in `quickstarts/`).
-2. `scripts/00_foundation.sql` ready with roles, warehouses, databases, schemas.
+2. Confirmation that no infrastructure DDL remains in `scripts/` (Terraform is the
+   single source of truth).
 3. Confirmation message listing every changed identifier.

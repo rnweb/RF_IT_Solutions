@@ -1,24 +1,31 @@
 # Prompt 3 — Automated Execution & Validation
 
-> Using the configured `snowsql` CLI and the active Python environment, execute
-> `00_foundation.sql`. Proceed to execute the Data Governance scripts to apply Dynamic
-> Data Masking to the 'CREDIT_CARD' and 'NATIONAL_ID' columns. Finally, write and execute
-> a Python script that asserts the masking policy is working by querying the table using
-> the `ACCOUNTADMIN` role (should see plaintext) and a simulated `BI_ANALYST` role
-> (should see masked data). Report the validation results.
+> Provision the foundation with Terraform (`terraform init && terraform plan &&
+> terraform apply` in `snowflake-platform-demo/terraform/`). Then, using the configured
+> `snowsql`/`snow` CLI and the active Python environment, execute the Data Governance
+> scripts to bind Dynamic Data Masking to the 'CREDIT_CARD_NUMBER' and 'NATIONAL_ID'
+> columns. Finally, write and execute a Python script that asserts the masking policy is
+> working by querying the table using an admin role (should see plaintext) and
+> `FR_BI_ANALYST` (should see masked data). Report the validation results.
 
 ## Execution Order
 
-1. `scripts/00_foundation.sql`
+1. `cd terraform && terraform init && terraform plan && terraform apply`
 2. Session 1 — Lakehouse & Engineering (`scripts/session-1-lakehouse/`)
-3. Session 2 — AI & Analytics (`scripts/session-2-ai-analytics/`) — **human review required
-   before any Streamlit/Cortex deploy**
-4. Session 3 — Governance & Security (`scripts/session-3-governance/`)
-5. Validation queries (row counts, masking assertions, Cortex response checks)
-6. `scripts/99_demo_reset.sql` when a clean environment is needed
+3. Set `attach_policies_to_tables = true` in `terraform.tfvars`, re-run
+   `terraform apply` (binds masking policies — Session 3 activation)
+4. Session 2 — AI & Analytics (`scripts/session-2-ai-analytics/`) — **human review required
+   before any Streamlit/Cortex/Native App deploy**
+5. Session 3 — Governance & Security (`scripts/session-3-governance/`) — RLS policy
+   binding + mapping-table data load
+6. Validation queries (row counts, masking assertions, Cortex response checks)
+7. Reset when a clean environment is needed:
+   - data → session reset scripts
+   - infrastructure → `terraform destroy`
 
 ## Expected Output
 
+- `terraform plan`/`apply` log with created resource count.
 - Execution log per script with success/failure status.
-- Masking validation results: `ACCOUNTADMIN` → plaintext, `FR_BI_ANALYST` → masked.
+- Masking validation results: admin role → plaintext, `FR_BI_ANALYST` → masked.
 - Validation summary table of row counts and asset checks.

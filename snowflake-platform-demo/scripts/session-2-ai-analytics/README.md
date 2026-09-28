@@ -32,6 +32,6 @@ Assets for the second demonstration session.
 |-------|----------|
 | `quickstarts/cortex-native-app-chatbot` | `sfguide-build-chatbot-with-snowflake-native-app-snowflake-cortex` |
 
-> Note: the Native App package requires its own database (proposed
-> `SUPERINTENDENCY_CHATBOT_APP`, provisional) — see
+> Note: the Native App package requires its own database —
+> `CORTEX_NATIVE_APP_DB` (approved, provisioned in `terraform/main.tf`) — see
 > [phase1-repository-scan.md](../../phase1-repository-scan.md).

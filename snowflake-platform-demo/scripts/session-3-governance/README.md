@@ -4,24 +4,29 @@ Assets for the third demonstration session.
 
 ## Scope
 
-- Dynamic Data Masking on `CLIENT_PROFILE_DIM.NATIONAL_ID` and
-  `CREDIT_CARD_TRANSACTIONS.CREDIT_CARD_NUMBER`
-- Row-Level Security via a role-mapping table in `GOVERNANCE_SCHEMA`
+- Row-Level Security **binding** via `ALTER TABLE ... ADD ROW ACCESS POLICY`
+  (the policy object itself is Terraform-managed — `terraform/governance.tf`)
+- Seed data for the `ROLE_MAPPING` table (data stays out of Terraform)
+- Masking policies (`MASK_NATIONAL_ID`, `MASK_CREDIT_CARD`) are Terraform-managed and
+  bound by setting `attach_policies_to_tables = true` in `terraform/terraform.tfvars`
 - Access matrix: `ACCOUNTADMIN`/`FR_DEMO_ADMIN` see plaintext,
-  `FR_BI_ANALYST` sees masked data
+  `FR_BI_ANALYST` sees masked/filtered data
 
 ## Planned Files
 
 | File | Purpose |
 |------|---------|
-| `01_masking_policies.sql` | `MASK_CREDIT_CARD`, `MASK_NATIONAL_ID` policies + column attachment |
-| `02_row_level_security.sql` | Role-mapping table + row access policy |
-| `03_grants_and_access.sql` | Role grants for the demo access matrix |
-| `04_validation_masking.py` | Asserts plaintext for admin vs. masked for analyst |
+| `01_rls_binding.sql` | `ALTER TABLE ... ADD ROW ACCESS POLICY` (no Terraform resource exists) |
+| `02_load_role_mapping.sql` | Seed `GOVERNANCE_SCHEMA.ROLE_MAPPING` rows |
+| `03_validation_masking.py` | Asserts plaintext for admin vs. masked/filtered for `FR_BI_ANALYST` |
+
+> Infrastructure (policies, mapping table DDL, grants) is **not** defined here —
+> see [`terraform/governance.tf`](../../terraform/governance.tf).
 
 ## Prerequisites
 
 - Sessions 1–2 completed (tables with PII columns exist)
+- `terraform apply` run with `attach_policies_to_tables = true` (masking bound)
 - Role: `FR_DEMO_ADMIN` / `SECURITYADMIN`, warehouses: `WH_CORTEX_LARGE`
 
 ## Quickstart Source (cloned, immutable)

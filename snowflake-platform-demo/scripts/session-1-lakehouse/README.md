@@ -21,7 +21,8 @@ Assets for the first demonstration session.
 
 ## Prerequisites
 
-- `scripts/00_foundation.sql` executed successfully
+- Infrastructure provisioned: `cd terraform && terraform apply` (databases, schemas,
+  warehouses, roles, grants)
 - Role: `FR_DATA_ENGINEER`, warehouse: `WH_INGESTION_XSMALL`
 
 ## Quickstart Sources (cloned, immutable)
