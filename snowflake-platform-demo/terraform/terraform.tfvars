@@ -35,4 +35,4 @@ row_access_policy_name     = "RLS_BUSINESS_UNIT"
 rls_mapping_table          = "ROLE_MAPPING"
 
 # Policy attachment happens AFTER the session data scripts create the tables.
-attach_policies_to_tables = false
+attach_policies_to_tables = true

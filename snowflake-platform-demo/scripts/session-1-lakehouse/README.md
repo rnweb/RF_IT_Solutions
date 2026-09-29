@@ -86,12 +86,53 @@ dbt source freshness --profiles-dir .  # 3/3 sources fresh
 Expected result: **`PASS=41 WARN=0 ERROR=0`** (3 views + 2 marts + 37 tests) and
 **`3/3 sources fresh`**.
 
+## Step 3 — Apache Iceberg lakehouse proof (open formats)
+
+```bash
+snowsql -f scripts/session-1-lakehouse/sql/03_iceberg_lakehouse_demo.sql
+# ...or paste the file into a Snowsight worksheet
+```
+
+Run as **`FR_DATA_ENGINEER`** on **`WH_INGESTION_XSMALL`**. The script is
+self-contained and re-runnable (`IF NOT EXISTS`, `TRUNCATE`, `OVERWRITE`):
+
+1. Creates the internal stage `STAGING_SCHEMA.ICEBERG_DEMO_STAGE`
+2. Exports all 18 000 mart rows to the stage as **Parquet**
+   (`data_0_0_0.snappy.parquet`, ~518 KB)
+3. Creates `CORE_BANKING_SCHEMA.HISTORICO_TRANSACCIONES_ICEBERG` with
+   `CREATE ICEBERG TABLE ... CATALOG = 'SNOWFLAKE'`
+4. Loads the full history into it
+
+Verification (expected results):
+
+| Check | Expected |
+|-------|----------|
+| `SHOW TABLES LIKE 'HISTORICO%'` | `is_iceberg = 'Y'` (Snowsight shows the Iceberg badge) |
+| Row parity query | `FUENTE = 18000`, `ICEBERG = 18000` |
+| `LIST @...ICEBERG_DEMO_STAGE/historico_transacciones/` | `data_0_0_0.snappy.parquet` |
+
+Presenter talking points:
+
+- **Open table format:** the table follows the Apache Iceberg spec — metadata
+  in Avro, data in Parquet — so it stays readable by any Iceberg engine
+  (Spark, Athena, Flink, Dremio) with zero vendor lock-in; regulators can
+  audit the data outside Snowflake.
+- **Open file format on stage:** the Parquet export on `@ICEBERG_DEMO_STAGE`
+  can be read locally with DuckDB/Spark as-is
+  (`duckdb -c "SELECT * FROM 'data_0_0_0.snappy.parquet' LIMIT 10"`).
+- **Managed vs. external:** `CATALOG = 'SNOWFLAKE'` uses Snowflake-managed
+  storage (account-local, no cloud credentials needed); `BASE_LOCATION` is
+  only valid for external volumes — see `governance` notes in Session 3.
+- Requires the schema privilege `CREATE ICEBERG TABLE` (granted to
+  `FR_DATA_ENGINEER` in `terraform/security.tf`).
+
 ## Files
 
 | File | Purpose |
 |------|---------|
 | `sql/01_create_raw_tables.sql` | Spanish raw DDL + file format + internal stage |
 | `sql/02_load_raw_data.sql` | TRUNCATE + `COPY INTO` from `@RAW_STAGE` |
+| `sql/03_iceberg_lakehouse_demo.sql` | Iceberg lakehouse proof: stage → Parquet → `CREATE ICEBERG TABLE` → verify |
 | `python/generate_and_load.py` | Deterministic data generation + PUT + COPY + row-count check |
 | `../../dbt/` | dbt project (models, tests, macros, pinned profile) |
 

@@ -26,8 +26,12 @@ terraform {
 
   required_providers {
     snowflake = {
-      source  = "snowflakedb/snowflake"
-      version = "~> 1.0"
+      source = "snowflakedb/snowflake"
+      # v1.x (and its 12-column DESCRIBE TABLE parser) breaks against current
+      # Snowflake bundles: DESCRIBE TABLE TYPE = COLUMNS now returns 13 columns
+      # (new `write default`), failing every masking-policy attachment read.
+      # v2.21+ scans 13 columns correctly.
+      version = "~> 2.21.0"
     }
   }
 }
@@ -35,6 +39,23 @@ terraform {
 provider "snowflake" {
   # Preview resources used by governance.tf and main.tf (cannot be set via
   # environment variables):
+  preview_features_enabled = [
+    "snowflake_table_resource",
+    "snowflake_table_column_masking_policy_application_resource",
+    "snowflake_stage_resource",
+  ]
+}
+
+# Policy-attachment provider: APPLY MASKING POLICY exists only as an
+# account-level privilege (granting it ON SCHEMA fails 003008) and only
+# FR_DEMO_ADMIN / ACCOUNTADMIN hold it. FR_TERRAFORM cannot grant account-level
+# privileges (003102), so the masking-policy attachments are executed through
+# this aliased provider session running as FR_DEMO_ADMIN — still fully
+# Terraform-managed, no manual SQL.
+provider "snowflake" {
+  alias = "policy_author"
+  role  = var.role_admin
+
   preview_features_enabled = [
     "snowflake_table_resource",
     "snowflake_table_column_masking_policy_application_resource",

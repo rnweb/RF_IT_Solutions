@@ -1,33 +1,119 @@
-# Session 3 — Governance & Security
+# Session 3 — Governance & Security (Horizon)
 
-Assets for the third demonstration session.
+**Audience:** Data Governors & Security — Superintendency of Banks.
 
-## Scope
+Same tables, three personas, **zero application changes**: dynamic masking for
+PII and row-level security by business unit, plus the Horizon object-tagging
+complement — all discoverable in Snowsight.
 
-- Row-Level Security **binding** via `ALTER TABLE ... ADD ROW ACCESS POLICY`
-  (the policy object itself is Terraform-managed — `terraform/governance.tf`)
-- Seed data for the `ROLE_MAPPING` table (data stays out of Terraform)
-- Masking policies (`MASK_NATIONAL_ID`, `MASK_CREDIT_CARD`) are Terraform-managed and
-  bound by setting `attach_policies_to_tables = true` in `terraform/terraform.tfvars`
-- Access matrix: `ACCOUNTADMIN`/`FR_DEMO_ADMIN` see plaintext,
-  `FR_BI_ANALYST` sees masked/filtered data
+| Persona (role) | `RUT` / `NUMERO_TARJETA` | Business units visible |
+|----------------|--------------------------|------------------------|
+| `FR_DEMO_ADMIN` / `ACCOUNTADMIN` | **plaintext** (policy bypass) | PYME + CORPORATIVO + RETAIL (18 000 rows) |
+| `FR_DATA_ENGINEER` | masked `****-****-****-****` | all three — mapped to every unit (dbt/ML keep working) |
+| `FR_BI_ANALYST` | masked `***-**-****` / `****-****-****-****` | **RETAIL only (5 849 rows)** |
 
-## Planned Files
+## Files
 
 | File | Purpose |
 |------|---------|
-| `01_rls_binding.sql` | `ALTER TABLE ... ADD ROW ACCESS POLICY` (no Terraform resource exists) |
-| `02_load_role_mapping.sql` | Seed `GOVERNANCE_SCHEMA.ROLE_MAPPING` rows |
-| `03_validation_masking.py` | Asserts plaintext for admin vs. masked/filtered for `FR_BI_ANALYST` |
-
-> Infrastructure (policies, mapping table DDL, grants) is **not** defined here —
-> see [`terraform/governance.tf`](../../terraform/governance.tf).
+| `sql/01_seed_role_mapping.sql` | Seeds `GOVERNANCE_SCHEMA.ROLE_MAPPING` + binds the RLS policy (`ALTER TABLE ... ADD ROW ACCESS POLICY` — no Terraform resource exists) |
+| `sql/02_verify_masking_rls.sql` | Admin-vs-analyst proof: plaintext/all-units vs masked/RETAIL-only |
+| `sql/03_object_tagging_demo.sql` | Tags the PII columns with `DATA_CLASSIFICATION = 'PII'` (Horizon object tagging) |
+| `../../terraform/governance.tf` | Masking + row-access policies, `ROLE_MAPPING` DDL, `attach_policies_to_tables` switch |
 
 ## Prerequisites
 
-- Sessions 1–2 completed (tables with PII columns exist)
-- `terraform apply` run with `attach_policies_to_tables = true` (masking bound)
-- Role: `FR_DEMO_ADMIN` / `SECURITYADMIN`, warehouses: `WH_CORTEX_LARGE`
+- Sessions 1–2 complete (mart tables + dbt run exist)
+- `terraform/terraform.tfvars` → `attach_policies_to_tables = true`, then
+  `terraform plan` (No changes) + `terraform apply` — attaches
+  `MASK_NATIONAL_ID` → `CLIENT_PROFILE_DIM.RUT` and
+  `MASK_CREDIT_CARD` → `CREDIT_CARD_TRANSACTIONS.NUMERO_TARJETA`
+- Environment: `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER` (key-pair),
+  `SNOWFLAKE_PRIVATE_KEY_PATH`
+- Role: `FR_DEMO_ADMIN` (granted to `OPERATIONS`), warehouse: `WH_APP_XSMALL`
+  (the analyst has no `WH_INGESTION_XSMALL` grant)
+
+## Step 1 — Seed + RLS binding
+
+```bash
+snowsql -f scripts/session-3-governance/sql/01_seed_role_mapping.sql
+# ...or paste into a Snowsight worksheet
+```
+
+Expected output:
+
+```
+DELETE  -> 0 rows (first run)
+INSERT  -> 4 rows
+SELECT  -> FR_BI_ANALYST    | RETAIL
+           FR_DATA_ENGINEER | CORPORATIVO
+           FR_DATA_ENGINEER | PYME
+           FR_DATA_ENGINEER | RETAIL
+ALTER   -> Statement executed successfully.
+```
+
+The binding in step 3 is **one-shot**: re-running the file re-seeds cleanly,
+but the final `ALTER` errors if the policy is already attached (ignore it).
+
+## Step 2 — Verify masking + row-level security
+
+```bash
+snowsql -f scripts/session-3-governance/sql/02_verify_masking_rls.sql
+```
+
+Run the **whole file in one session** — it switches roles mid-way.
+
+| Check | `FR_DEMO_ADMIN` | `FR_BI_ANALYST` |
+|-------|-----------------|-----------------|
+| `CLIENT_PROFILE_DIM.RUT` | `5.000.081-8` (plaintext) | `***-**-****` |
+| `CREDIT_CARD_TRANSACTIONS.NUMERO_TARJETA` | `3714-4911-9269-2129` | `****-****-****-****` |
+| Rows per unit | `CORPORATIVO 5928 / PYME 6223 / RETAIL 5849` (18 000) | `RETAIL 5849` only |
+| `ROLE_MAPPING` | 4 rows visible | n/a |
+
+## Step 3 — Horizon object tagging
+
+```bash
+snowsql -f scripts/session-3-governance/sql/03_object_tagging_demo.sql
+```
+
+Expected output:
+
+```
+CREATE TAG -> DATA_CLASSIFICATION already exists / created
+SET TAG    -> Statement executed successfully.  (x2)
+SELECT     -> CLIENT_PROFILE_DIM       | DATA_CLASSIFICATION | PII
+              CREDIT_CARD_TRANSACTIONS | DATA_CLASSIFICATION | PII
+```
+
+No extra grants needed: `APPLY TAG` is account-level only (granting it on a
+schema fails `003008`), and Snowflake lets any role holding `MODIFY` on the
+table tag its columns — `FR_DEMO_ADMIN` got `MODIFY` on the core schema from
+Terraform (`admin_core_modify`).
+
+## Horizon walkthrough in Snowsight (presenter)
+
+1. **Policies** — Data → `SUPERINTENDENCY_DEMO_DB` →
+   `CORE_BANKING_SCHEMA.CREDIT_CARD_TRANSACTIONS` → column details show the
+   attached masking policy; the table's policy panel shows
+   `RLS_BUSINESS_UNIT`. Cross-check the same facts via SQL:
+   `SHOW MASKING POLICY ...`, `SHOW ROW ACCESS POLICY ...`.
+2. **Object tagging** — the tagged PII columns (`RUT`, `NUMERO_TARJETA`) show
+   `DATA_CLASSIFICATION = PII` on the column details and under the Data
+   Governance Center → Object Tagging. This is the Horizon label that drives
+   classification/discovery; the masking policies are the enforcement.
+3. **Lineage** — Data → browse to `STAGING_SCHEMA.TRANSACCIONES` → Lineage
+   tab: raw → `stg_transacciones` (view) → `CREDIT_CARD_TRANSACTIONS` (mart)
+   → fraud model / BI consumers. Same view answers "who reads this PII column?".
+
+## Demo Talking Points
+
+1. Same table, two roles → two different result sets, zero application changes.
+2. Masking policies survive BI tool queries (the policy follows the column,
+   not the tool); RLS filters rows by business unit at query time.
+3. Enforcement (masking/RLS) is Terraform-managed; row *data* (the mapping)
+   and the RLS binding live in SQL scripts — right split for review/audit.
+4. Object tagging classifies PII for discovery; lineage shows its path —
+   classification, enforcement and visibility in one platform.
 
 ## Quickstart Source (cloned, immutable)
 
@@ -37,9 +123,3 @@ Assets for the third demonstration session.
 
 Hardcoded-name mapping (`HRZN_*` → banking targets): see
 [phase1-repository-scan.md](../../phase1-repository-scan.md).
-
-## Demo Talking Points
-
-1. Same table, two roles → two different result sets, zero application changes.
-2. Masking policies survive BI tool queries (policy follows the column).
-3. RLS filters rows by business unit for the analyst persona.

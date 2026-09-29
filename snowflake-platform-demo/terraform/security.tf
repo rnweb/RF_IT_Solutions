@@ -107,6 +107,69 @@ resource "snowflake_grant_privileges_to_account_role" "admin_policy_authoring" {
   }
 }
 
+# Session 3 — the admin verifies unmasked data and seeds/reads ROLE_MAPPING:
+# MODIFY on core enables ALTER TABLE ... ADD/DROP ROW ACCESS POLICY (the RLS
+# binding is executed by the Session 3 script — the provider has no resource
+# for it), SELECT lets the admin query the marts plaintext for the demo.
+resource "snowflake_grant_privileges_to_account_role" "admin_core_modify" {
+  account_role_name = snowflake_account_role.admin.name
+  privileges        = ["MODIFY"]
+  on_schema {
+    schema_name = snowflake_schema.core.fully_qualified_name
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "admin_core_select_all" {
+  account_role_name = snowflake_account_role.admin.name
+  privileges        = ["SELECT"]
+  on_schema_object {
+    all {
+      in_schema          = snowflake_schema.core.fully_qualified_name
+      object_type_plural = "TABLES"
+    }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "admin_core_select_future" {
+  account_role_name = snowflake_account_role.admin.name
+  privileges        = ["SELECT"]
+  on_schema_object {
+    future {
+      in_schema          = snowflake_schema.core.fully_qualified_name
+      object_type_plural = "TABLES"
+    }
+  }
+}
+
+# Session 3 — Horizon object tagging: no APPLY TAG grant is needed here —
+# APPLY TAG exists only as an account-level privilege (granting it ON SCHEMA
+# or ON DATABASE fails 003008), and Snowflake lets a role that holds MODIFY on
+# the table (FR_DEMO_ADMIN via admin_core_modify) tag its columns directly —
+# verified with sql/03_object_tagging_demo.sql. CREATE TAG on GOVERNANCE_SCHEMA
+# comes from admin_policy_authoring above.
+
+resource "snowflake_grant_privileges_to_account_role" "admin_governance_dml_all" {
+  account_role_name = snowflake_account_role.admin.name
+  privileges        = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+  on_schema_object {
+    all {
+      in_schema          = snowflake_schema.governance.fully_qualified_name
+      object_type_plural = "TABLES"
+    }
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "admin_governance_dml_future" {
+  account_role_name = snowflake_account_role.admin.name
+  privileges        = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+  on_schema_object {
+    future {
+      in_schema          = snowflake_schema.governance.fully_qualified_name
+      object_type_plural = "TABLES"
+    }
+  }
+}
+
 # NOTE — APPLY MASKING POLICY and APPLY ROW ACCESS POLICY exist only as
 # account-level (global) privileges (granting them ON SCHEMA fails 003008),
 # and FR_TERRAFORM cannot grant account-level privileges (003102) — Snowflake
@@ -128,7 +191,8 @@ resource "snowflake_grant_privileges_to_account_role" "engineer_db_usage" {
 
 resource "snowflake_grant_privileges_to_account_role" "engineer_core_build" {
   account_role_name = snowflake_account_role.engineer.name
-  privileges        = ["USAGE", "CREATE TABLE", "CREATE VIEW", "MODIFY", "ADD SEARCH OPTIMIZATION"]
+  # CREATE ICEBERG TABLE is a distinct schema privilege (Session 1 lakehouse demo).
+  privileges = ["USAGE", "CREATE TABLE", "CREATE ICEBERG TABLE", "CREATE VIEW", "MODIFY", "ADD SEARCH OPTIMIZATION"]
   on_schema {
     schema_name = snowflake_schema.core.fully_qualified_name
   }

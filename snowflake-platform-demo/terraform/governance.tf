@@ -113,9 +113,14 @@ resource "snowflake_row_access_policy" "business_unit" {
 # Tables are created by the session data scripts (scripts/session-1-lakehouse),
 # not by Terraform. Flip attach_policies_to_tables to true in terraform.tfvars
 # AFTER the data load, then re-run `terraform apply` for the governance demo.
+#
+# The aliased provider (providers.tf) executes these ALTERs as FR_DEMO_ADMIN,
+# the only non-system role holding the account-level APPLY MASKING POLICY
+# privilege — see the provider comment for the full rationale.
 
 resource "snowflake_table_column_masking_policy_application" "national_id" {
-  count = var.attach_policies_to_tables ? 1 : 0
+  provider = snowflake.policy_author
+  count    = var.attach_policies_to_tables ? 1 : 0
 
   table          = "${var.demo_db_name}.${var.schema_core}.CLIENT_PROFILE_DIM"
   column         = "RUT"
@@ -123,7 +128,8 @@ resource "snowflake_table_column_masking_policy_application" "national_id" {
 }
 
 resource "snowflake_table_column_masking_policy_application" "credit_card" {
-  count = var.attach_policies_to_tables ? 1 : 0
+  provider = snowflake.policy_author
+  count    = var.attach_policies_to_tables ? 1 : 0
 
   table          = "${var.demo_db_name}.${var.schema_core}.CREDIT_CARD_TRANSACTIONS"
   column         = "NUMERO_TARJETA"
