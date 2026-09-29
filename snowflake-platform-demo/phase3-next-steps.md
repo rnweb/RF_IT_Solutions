@@ -57,7 +57,7 @@ GRANT APPLY ROW ACCESS POLICY ON ACCOUNT TO ROLE FR_DEMO_ADMIN;
    - Full presenter runbook: `scripts/session-1-lakehouse/README.md`
 3. **Quickstart reference:** `quickstarts/dbt-on-snowflake`.
 
-## 2. Session 2 — Snowpark, Cortex & Streamlit (`scripts/session-2-ai-analytics/`)
+## 2. Session 2 — Snowpark, Cortex & Streamlit (`scripts/session-2-analytics-ai/`)
 
 1. **Snowpark Python** feature engineering as `FR_DATA_ENGINEER` on
    `WH_CORTEX_LARGE` (forecasting / anomaly features into `RISK_ANALYTICS_SCHEMA`).

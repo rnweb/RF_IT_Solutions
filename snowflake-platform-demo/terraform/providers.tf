@@ -33,9 +33,11 @@ terraform {
 }
 
 provider "snowflake" {
-  # Preview resources used by governance.tf (cannot be set via environment variables):
+  # Preview resources used by governance.tf and main.tf (cannot be set via
+  # environment variables):
   preview_features_enabled = [
     "snowflake_table_resource",
     "snowflake_table_column_masking_policy_application_resource",
+    "snowflake_stage_resource",
   ]
 }

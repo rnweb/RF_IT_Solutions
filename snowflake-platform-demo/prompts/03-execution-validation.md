@@ -14,7 +14,7 @@
 2. Session 1 — Lakehouse & Engineering (`scripts/session-1-lakehouse/`)
 3. Set `attach_policies_to_tables = true` in `terraform.tfvars`, re-run
    `terraform apply` (binds masking policies — Session 3 activation)
-4. Session 2 — AI & Analytics (`scripts/session-2-ai-analytics/`) — **human review required
+4. Session 2 — AI & Analytics (`scripts/session-2-analytics-ai/`) — **human review required
    before any Streamlit/Cortex/Native App deploy**
 5. Session 3 — Governance & Security (`scripts/session-3-governance/`) — RLS policy
    binding + mapping-table data load

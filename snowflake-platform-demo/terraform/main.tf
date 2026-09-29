@@ -73,3 +73,13 @@ resource "snowflake_warehouse" "app" {
   initially_suspended          = true
   statement_timeout_in_seconds = 300
 }
+
+# ---------------------------------------------------------------------------
+# App staging area — holds streamlit_app.py until the presenter deploys it
+# ---------------------------------------------------------------------------
+resource "snowflake_stage" "streamlit" {
+  name     = "STREAMLIT_STAGE"
+  database = snowflake_database.native_app.name
+  schema   = "PUBLIC"
+  comment  = "Source files for the Panel de Prevención de Fraude Streamlit app."
+}

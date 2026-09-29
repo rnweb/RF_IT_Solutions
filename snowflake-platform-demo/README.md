@@ -48,7 +48,7 @@ snowflake-platform-demo/
 │   └── governance.tf              # Masking policies, RLS policy + mapping table
 └── scripts/                       # Data & logic (never infrastructure)
     ├── session-1-lakehouse/       # Spanish raw DDL, synthetic loader, presenter README
-    ├── session-2-ai-analytics/    # Snowpark ML, Cortex RAG, app deployment
+    ├── session-2-analytics-ai/     # Snowpark ML, Cortex AI, Streamlit app
     └── session-3-governance/      # Policy binding, mapping-table data, validation
 ```
 

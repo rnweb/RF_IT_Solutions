@@ -145,7 +145,9 @@ resource "snowflake_grant_privileges_to_account_role" "engineer_staging_build" {
 
 resource "snowflake_grant_privileges_to_account_role" "engineer_analytics_build" {
   account_role_name = snowflake_account_role.engineer.name
-  privileges        = ["USAGE", "CREATE TABLE", "CREATE VIEW", "MODIFY", "ADD SEARCH OPTIMIZATION"]
+  # CREATE MODEL (+ CREATE FUNCTION for the model's generated inference
+  # functions) lets the engineer register models in the Model Registry.
+  privileges = ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE MODEL", "CREATE FUNCTION", "MODIFY", "ADD SEARCH OPTIMIZATION"]
   on_schema {
     schema_name = snowflake_schema.analytics.fully_qualified_name
   }
@@ -174,6 +176,43 @@ resource "snowflake_grant_privileges_to_account_role" "engineer_wh_cortex" {
   on_account_object {
     object_type = "WAREHOUSE"
     object_name = snowflake_warehouse.cortex.name
+  }
+}
+
+# The engineer executes ML inference and deploys the demo Streamlit app.
+resource "snowflake_grant_privileges_to_account_role" "engineer_wh_app" {
+  account_role_name = snowflake_account_role.engineer.name
+  privileges        = ["USAGE"]
+  on_account_object {
+    object_type = "WAREHOUSE"
+    object_name = snowflake_warehouse.app.name
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "engineer_native_app_usage" {
+  account_role_name = snowflake_account_role.engineer.name
+  privileges        = ["USAGE"]
+  on_account_object {
+    object_type = "DATABASE"
+    object_name = snowflake_database.native_app.name
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "engineer_native_app_streamlit" {
+  account_role_name = snowflake_account_role.engineer.name
+  privileges        = ["USAGE", "CREATE STREAMLIT"]
+  on_schema {
+    schema_name = "${snowflake_database.native_app.name}.PUBLIC"
+  }
+}
+
+# PUT of streamlit_app.py into the app stage (presenter step, human-approved).
+resource "snowflake_grant_privileges_to_account_role" "engineer_native_app_stage_rw" {
+  account_role_name = snowflake_account_role.engineer.name
+  privileges        = ["READ", "WRITE"]
+  on_schema_object {
+    object_type = "STAGE"
+    object_name = snowflake_stage.streamlit.fully_qualified_name
   }
 }
 
