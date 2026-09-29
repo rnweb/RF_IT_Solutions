@@ -14,6 +14,7 @@ _site/
 *.tfstate.*
 .terraform/
 *.tfplan
+tfplan
 
 # OS files
 .DS_Store

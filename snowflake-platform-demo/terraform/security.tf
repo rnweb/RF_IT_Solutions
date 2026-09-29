@@ -45,7 +45,8 @@ resource "snowflake_grant_account_role" "analyst_to_admin" {
 # ---------------------------------------------------------------------------
 resource "snowflake_grant_privileges_to_account_role" "admin_db_usage" {
   account_role_name = snowflake_account_role.admin.name
-  privileges        = ["USAGE", "MONITOR"]
+  # CREATE SCHEMA is a DATABASE-level privilege, not a schema-level one.
+  privileges = ["USAGE", "MONITOR", "CREATE SCHEMA"]
   on_account_object {
     object_type = "DATABASE"
     object_name = snowflake_database.demo.name
@@ -54,7 +55,7 @@ resource "snowflake_grant_privileges_to_account_role" "admin_db_usage" {
 
 resource "snowflake_grant_privileges_to_account_role" "admin_all_schemas" {
   account_role_name = snowflake_account_role.admin.name
-  privileges        = ["USAGE", "MONITOR", "CREATE SCHEMA"]
+  privileges        = ["USAGE", "MONITOR"]
   on_schema {
     all_schemas_in_database = snowflake_database.demo.name
   }
@@ -93,13 +94,18 @@ resource "snowflake_grant_privileges_to_account_role" "admin_policy_authoring" {
     "CREATE MASKING POLICY",
     "CREATE ROW ACCESS POLICY",
     "CREATE TAG",
-    "APPLY MASKING POLICY",
-    "APPLY ROW ACCESS POLICY",
   ]
   on_schema {
     schema_name = snowflake_schema.governance.fully_qualified_name
   }
 }
+
+# NOTE — APPLY MASKING POLICY and APPLY ROW ACCESS POLICY exist only as
+# account-level (global) privileges (granting them ON SCHEMA fails 003008),
+# and FR_TERRAFORM cannot grant account-level privileges (003102) — Snowflake
+# checks granter authorization even for idempotent GRANTs. These two grants
+# are therefore a manual bootstrap step executed once as ACCOUNTADMIN
+# (documented in phase3-next-steps.md); Terraform does not manage them.
 
 # ---------------------------------------------------------------------------
 # FR_DATA_ENGINEER — build in raw / staging / analytics layers

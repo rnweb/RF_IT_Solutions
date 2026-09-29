@@ -85,6 +85,10 @@ resource "snowflake_row_access_policy" "business_unit" {
   schema   = snowflake_schema.governance.name
   comment  = "Filters rows by business unit for non-admin roles via the ROLE_MAPPING table."
 
+  # The policy body contains a subquery against ROLE_MAPPING; Snowflake
+  # resolves it at CREATE time, so the table must exist first.
+  depends_on = [snowflake_table.rls_mapping]
+
   argument {
     name = "business_unit"
     type = "VARCHAR"
