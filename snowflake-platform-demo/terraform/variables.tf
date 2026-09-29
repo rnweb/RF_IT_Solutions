@@ -83,12 +83,12 @@ variable "role_analyst" {
 # ---------------------------------------------------------------------------
 variable "masking_policy_national_id" {
   type        = string
-  description = "Masking policy for CLIENT_PROFILE_DIM.NATIONAL_ID."
+  description = "Masking policy for CLIENT_PROFILE_DIM.RUT (national ID)."
 }
 
 variable "masking_policy_credit_card" {
   type        = string
-  description = "Masking policy for CREDIT_CARD_TRANSACTIONS.CREDIT_CARD_NUMBER."
+  description = "Masking policy for CREDIT_CARD_TRANSACTIONS.NUMERO_TARJETA."
 }
 
 variable "row_access_policy_name" {
@@ -104,6 +104,11 @@ variable "rls_mapping_table" {
 # ---------------------------------------------------------------------------
 # Behaviour toggles
 # ---------------------------------------------------------------------------
+variable "operator_user" {
+  type        = string
+  description = "Snowflake user (service/presenter account) granted FR_DEMO_ADMIN so it can assume the demo roles."
+  default     = "OPERATIONS"
+}
 variable "attach_policies_to_tables" {
   type        = bool
   description = <<-EOT

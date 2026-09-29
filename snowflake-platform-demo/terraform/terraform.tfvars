@@ -25,6 +25,9 @@ role_admin    = "FR_DEMO_ADMIN"
 role_engineer = "FR_DATA_ENGINEER"
 role_analyst  = "FR_BI_ANALYST"
 
+# Operator user holding the role hierarchy root (inherits engineer + analyst)
+operator_user = "OPERATIONS"
+
 # Governance objects
 masking_policy_national_id = "MASK_NATIONAL_ID"
 masking_policy_credit_card = "MASK_CREDIT_CARD"

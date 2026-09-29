@@ -40,6 +40,13 @@ resource "snowflake_grant_account_role" "analyst_to_admin" {
   parent_role_name = snowflake_account_role.admin.name
 }
 
+# The operator user receives the hierarchy root and can therefore USE
+# FR_DATA_ENGINEER / FR_BI_ANALYST through role inheritance.
+resource "snowflake_grant_account_role" "operator_admin" {
+  role_name = snowflake_account_role.admin.name
+  user_name = var.operator_user
+}
+
 # ---------------------------------------------------------------------------
 # FR_DEMO_ADMIN — database, schemas, warehouses, policy authoring
 # ---------------------------------------------------------------------------
@@ -129,7 +136,8 @@ resource "snowflake_grant_privileges_to_account_role" "engineer_core_build" {
 
 resource "snowflake_grant_privileges_to_account_role" "engineer_staging_build" {
   account_role_name = snowflake_account_role.engineer.name
-  privileges        = ["USAGE", "CREATE TABLE", "CREATE VIEW", "MODIFY", "ADD SEARCH OPTIMIZATION"]
+  # CREATE FILE FORMAT + CREATE STAGE enable the raw COPY INTO ingestion.
+  privileges = ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE FILE FORMAT", "CREATE STAGE", "MODIFY", "ADD SEARCH OPTIMIZATION"]
   on_schema {
     schema_name = snowflake_schema.staging.fully_qualified_name
   }

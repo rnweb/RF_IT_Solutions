@@ -31,17 +31,31 @@ GRANT APPLY ROW ACCESS POLICY ON ACCOUNT TO ROLE FR_DEMO_ADMIN;
 
 ---
 
-## 1. Session 1 — Data Loading & dbt (`scripts/session-1-lakehouse/`)
+## 1. Session 1 — Data Foundation & dbt (`scripts/session-1-lakehouse/` + `dbt/`)
 
-1. **Raw load** — run as `FR_DATA_ENGINEER` on `WH_INGESTION_XSMALL`:
-   create raw landing tables in `CORE_BANKING_SCHEMA` (COPY INTO / staged CSVs).
-   *Tables are created by data, not IaC — future ALL/TABLES grants cover them.*
-2. **dbt** — `dbt/profiles.yml` is pre-wired (`role: FR_DATA_ENGINEER`,
-   `warehouse: WH_INGESTION_XSMALL`); point it at `SUPERINTENDENCY_DEMO_DB`.
-   - `dbt debug` → `dbt seed` → `dbt run` → `dbt test`
-   - Materializations: `staging` layer in `STAGING_SCHEMA`,
-     marts in `RISK_ANALYTICS_SCHEMA`.
-3. **Quickstart reference:** `quickstarts/getting-started-with-dbt-on-snowflake`.
+1. **Raw load (Spanish banking schema)** — from the repo root:
+
+   ```bash
+   python scripts/session-1-lakehouse/python/generate_and_load.py
+   ```
+
+   Generates synthetic data (seed 42), creates `CLIENTES` /
+   `TARJETAS_CREDITO` / `TRANSACCIONES` in `STAGING_SCHEMA`, PUT + `COPY INTO`
+   as `FR_DATA_ENGINEER` on `WH_INGESTION_XSMALL` (600 / 928 / 18,000 rows).
+2. **dbt** — `dbt/profiles.yml` pins `role: FR_DATA_ENGINEER`,
+   `database: SUPERINTENDENCY_DEMO_DB`, `warehouse: WH_INGESTION_XSMALL`:
+
+   ```bash
+   cd snowflake-platform-demo/dbt
+   dbt build --profiles-dir .             # staging views + marts + all tests
+   dbt source freshness --profiles-dir .  # 3/3 sources fresh
+   ```
+
+   - Staging views in `STAGING_SCHEMA` (`stg_*`), marts in
+     `CORE_BANKING_SCHEMA` (`CLIENT_PROFILE_DIM`, `CREDIT_CARD_TRANSACTIONS`)
+   - Expected: `PASS=41 WARN=0 ERROR=0`
+   - Full presenter runbook: `scripts/session-1-lakehouse/README.md`
+3. **Quickstart reference:** `quickstarts/dbt-on-snowflake`.
 
 ## 2. Session 2 — Snowpark, Cortex & Streamlit (`scripts/session-2-ai-analytics/`)
 
@@ -71,7 +85,7 @@ Executed **after** `CLIENT_PROFILE_DIM` and `CREDIT_CARD_TRANSACTIONS` exist
    ```sql
    ALTER TABLE SUPERINTENDENCY_DEMO_DB.CORE_BANKING_SCHEMA.CREDIT_CARD_TRANSACTIONS
      ADD ROW ACCESS POLICY SUPERINTENDENCY_DEMO_DB.GOVERNANCE_SCHEMA.RLS_BUSINESS_UNIT
-     ON (BUSINESS_UNIT);
+      ON (UNIDAD_NEGOCIO);
    ```
 
 4. **Verify:** query as `FR_BI_ANALYST` (masked PII + filtered rows) vs

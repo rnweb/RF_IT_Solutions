@@ -26,10 +26,17 @@ snowflake-platform-demo/
 ├── README.md                      # This file — overview and workflow
 ├── naming-conventions.md          # APPROVED original -> banking persona mapping
 ├── phase1-repository-scan.md      # Scan report: hardcoded names in cloned Quickstarts
+├── phase3-next-steps.md           # Phase 3 runbook (Sessions 1-3, post-IaC)
 ├── prompts/                       # Structured prompts fed to the OpenCode agent
 │   ├── 01-workspace-init-cloning.md
 │   ├── 02-refactoring-parameterization.md
 │   └── 03-execution-validation.md
+├── dbt/                           # dbt project (pinned to FR_DATA_ENGINEER)
+│   ├── dbt_project.yml            # staging views -> core marts
+│   ├── profiles.yml               # role/warehouse guardrails, env-var auth
+│   ├── models/                    # staging (stg_*), core (dim/incremental fact)
+│   ├── macros/                    # exact-schema generate_schema_name
+│   └── tests/                     # singular data-quality tests
 ├── quickstarts/                   # Clone target for Snowflake-Labs repos (not committed)
 │   └── README.md
 ├── terraform/                     # Enterprise-grade IaC (source of truth for infra)
@@ -40,7 +47,7 @@ snowflake-platform-demo/
 │   ├── security.tf                # Roles, hierarchy, RBAC grants
 │   └── governance.tf              # Masking policies, RLS policy + mapping table
 └── scripts/                       # Data & logic (never infrastructure)
-    ├── session-1-lakehouse/       # Snowpipe, stages, dbt project
+    ├── session-1-lakehouse/       # Spanish raw DDL, synthetic loader, presenter README
     ├── session-2-ai-analytics/    # Snowpark ML, Cortex RAG, app deployment
     └── session-3-governance/      # Policy binding, mapping-table data, validation
 ```

@@ -118,7 +118,7 @@ resource "snowflake_table_column_masking_policy_application" "national_id" {
   count = var.attach_policies_to_tables ? 1 : 0
 
   table          = "${var.demo_db_name}.${var.schema_core}.CLIENT_PROFILE_DIM"
-  column         = "NATIONAL_ID"
+  column         = "RUT"
   masking_policy = snowflake_masking_policy.national_id.fully_qualified_name
 }
 
@@ -126,7 +126,7 @@ resource "snowflake_table_column_masking_policy_application" "credit_card" {
   count = var.attach_policies_to_tables ? 1 : 0
 
   table          = "${var.demo_db_name}.${var.schema_core}.CREDIT_CARD_TRANSACTIONS"
-  column         = "CREDIT_CARD_NUMBER"
+  column         = "NUMERO_TARJETA"
   masking_policy = snowflake_masking_policy.credit_card.fully_qualified_name
 }
 
@@ -135,5 +135,5 @@ resource "snowflake_table_column_masking_policy_application" "credit_card" {
 # the binding is executed by the Session 3 script after tables exist:
 #   ALTER TABLE <demo_db>.<schema_core>.CREDIT_CARD_TRANSACTIONS
 #     ADD ROW ACCESS POLICY <demo_db>.<schema_governance>.RLS_BUSINESS_UNIT
-#     ON (BUSINESS_UNIT);
+#     ON (UNIDAD_NEGOCIO);
 # The policy object itself (defined above) remains fully Terraform-managed.

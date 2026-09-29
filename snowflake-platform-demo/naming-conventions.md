@@ -33,7 +33,7 @@ refactored copies live in `scripts/`).
 ## Phase 2 Decisions — APPROVED
 
 - **dbt guardrail:** `profiles.yml` hardcodes `role: FR_DATA_ENGINEER`
-  (never `ACCOUNTADMIN`) — see [`scripts/session-1-lakehouse/dbt/profiles.yml`](scripts/session-1-lakehouse/dbt/profiles.yml).
+  (never `ACCOUNTADMIN`) — see [`dbt/profiles.yml`](dbt/profiles.yml).
 - **Governance consolidation:** the three Quickstart schemas
   (`CLASSIFIERS`, `TAG_SCHEMA`, `SEC_POLICIES_SCHEMA`) consolidate into the single
   `GOVERNANCE_SCHEMA`.

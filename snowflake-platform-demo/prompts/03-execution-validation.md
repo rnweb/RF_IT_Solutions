@@ -3,7 +3,7 @@
 > Provision the foundation with Terraform (`terraform init && terraform plan &&
 > terraform apply` in `snowflake-platform-demo/terraform/`). Then, using the configured
 > `snowsql`/`snow` CLI and the active Python environment, execute the Data Governance
-> scripts to bind Dynamic Data Masking to the 'CREDIT_CARD_NUMBER' and 'NATIONAL_ID'
+> scripts to bind Dynamic Data Masking to the 'NUMERO_TARJETA' and 'RUT'
 > columns. Finally, write and execute a Python script that asserts the masking policy is
 > working by querying the table using an admin role (should see plaintext) and
 > `FR_BI_ANALYST` (should see masked data). Report the validation results.

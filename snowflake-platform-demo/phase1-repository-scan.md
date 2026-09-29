@@ -82,7 +82,7 @@ each repository's *actual* hardcoded names into the approved banking targets.
 1. **Zero literal matches** for approved generic tokens → Phase 2 must translate
    *actual* repo names using this report, not regex on the generic list.
 2. **`role: accountadmin` in `profiles.yml`** violates the security guardrail —
-   **APPROVED fix applied**: `scripts/session-1-lakehouse/dbt/profiles.yml` hardcodes
+   **APPROVED fix applied**: `dbt/profiles.yml` hardcodes
    `role: FR_DATA_ENGINEER`.
 3. **3 governance schemas → 1** — **APPROVED**: consolidated into `GOVERNANCE_SCHEMA`.
 4. **Native App package database** (`cortex_app`) cannot live inside
