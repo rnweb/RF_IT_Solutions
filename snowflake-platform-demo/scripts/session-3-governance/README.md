@@ -12,6 +12,20 @@ complement — all discoverable in Snowsight.
 | `FR_DATA_ENGINEER` | masked `****-****-****-****` | all three — mapped to every unit (dbt/ML keep working) |
 | `FR_BI_ANALYST` | masked `***-**-****` / `****-****-****-****` | **RETAIL only (5 849 rows)** |
 
+## Objects in scope (exact names)
+
+| Layer | Object | Role in this session |
+|-------|--------|----------------------|
+| Raw source | `SUPERINTENDENCY_DEMO_DB.STAGING_SCHEMA.CLIENTES` | upstream client data — lineage starts here (no policies attached) |
+| dbt staging view | `SUPERINTENDENCY_DEMO_DB.STAGING_SCHEMA.STG_CLIENTES` | middle hop of the lineage chain |
+| dbt mart | `SUPERINTENDENCY_DEMO_DB.CORE_BANKING_SCHEMA.CLIENT_PROFILE_DIM` | `RUT` column → `MASK_NATIONAL_ID` |
+| dbt mart | `SUPERINTENDENCY_DEMO_DB.CORE_BANKING_SCHEMA.CREDIT_CARD_TRANSACTIONS` | `NUMERO_TARJETA` → `MASK_CREDIT_CARD`; `UNIDAD_NEGOCIO` → `RLS_BUSINESS_UNIT` |
+| Policy data | `SUPERINTENDENCY_DEMO_DB.GOVERNANCE_SCHEMA.ROLE_MAPPING` | role → business-unit mapping consumed by the RLS policy |
+
+> dbt model names are lowercase in the project (`client_profile_dim`,
+> `credit_card_transactions`); Snowflake stores them uppercase
+> (`CLIENT_PROFILE_DIM`, `CREDIT_CARD_TRANSACTIONS`) — same objects.
+
 ## Files
 
 | File | Purpose |
@@ -26,8 +40,8 @@ complement — all discoverable in Snowsight.
 - Sessions 1–2 complete (mart tables + dbt run exist)
 - `terraform/terraform.tfvars` → `attach_policies_to_tables = true`, then
   `terraform plan` (No changes) + `terraform apply` — attaches
-  `MASK_NATIONAL_ID` → `CLIENT_PROFILE_DIM.RUT` and
-  `MASK_CREDIT_CARD` → `CREDIT_CARD_TRANSACTIONS.NUMERO_TARJETA`
+  `MASK_NATIONAL_ID` → `CORE_BANKING_SCHEMA.CLIENT_PROFILE_DIM.RUT` and
+  `MASK_CREDIT_CARD` → `CORE_BANKING_SCHEMA.CREDIT_CARD_TRANSACTIONS.NUMERO_TARJETA`
 - Environment: `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER` (key-pair),
   `SNOWFLAKE_PRIVATE_KEY_PATH`
 - Role: `FR_DEMO_ADMIN` (granted to `OPERATIONS`), warehouse: `WH_APP_XSMALL`
@@ -65,10 +79,10 @@ Run the **whole file in one session** — it switches roles mid-way.
 
 | Check | `FR_DEMO_ADMIN` | `FR_BI_ANALYST` |
 |-------|-----------------|-----------------|
-| `CLIENT_PROFILE_DIM.RUT` | `5.000.081-8` (plaintext) | `***-**-****` |
-| `CREDIT_CARD_TRANSACTIONS.NUMERO_TARJETA` | `3714-4911-9269-2129` | `****-****-****-****` |
-| Rows per unit | `CORPORATIVO 5928 / PYME 6223 / RETAIL 5849` (18 000) | `RETAIL 5849` only |
-| `ROLE_MAPPING` | 4 rows visible | n/a |
+| `CORE_BANKING_SCHEMA.CLIENT_PROFILE_DIM.RUT` | `5.000.081-8` (plaintext) | `***-**-****` |
+| `CORE_BANKING_SCHEMA.CREDIT_CARD_TRANSACTIONS.NUMERO_TARJETA` | `3714-4911-9269-2129` | `****-****-****-****` |
+| Rows per unit (`CREDIT_CARD_TRANSACTIONS`) | `CORPORATIVO 5928 / PYME 6223 / RETAIL 5849` (18 000) | `RETAIL 5849` only |
+| `GOVERNANCE_SCHEMA.ROLE_MAPPING` | 4 rows visible | n/a |
 
 ## Step 3 — Horizon object tagging
 
@@ -97,12 +111,14 @@ Terraform (`admin_core_modify`).
    attached masking policy; the table's policy panel shows
    `RLS_BUSINESS_UNIT`. Cross-check the same facts via SQL:
    `SHOW MASKING POLICY ...`, `SHOW ROW ACCESS POLICY ...`.
-2. **Object tagging** — the tagged PII columns (`RUT`, `NUMERO_TARJETA`) show
+2. **Object tagging** — the tagged PII columns (`CLIENT_PROFILE_DIM.RUT`,
+   `CREDIT_CARD_TRANSACTIONS.NUMERO_TARJETA`) show
    `DATA_CLASSIFICATION = PII` on the column details and under the Data
    Governance Center → Object Tagging. This is the Horizon label that drives
    classification/discovery; the masking policies are the enforcement.
-3. **Lineage** — Data → browse to `STAGING_SCHEMA.TRANSACCIONES` → Lineage
-   tab: raw → `stg_transacciones` (view) → `CREDIT_CARD_TRANSACTIONS` (mart)
+3. **Lineage** — Data → browse to
+   `SUPERINTENDENCY_DEMO_DB.STAGING_SCHEMA.TRANSACCIONES` → Lineage tab: raw →
+   `stg_transacciones` (view) → `CREDIT_CARD_TRANSACTIONS` (mart)
    → fraud model / BI consumers. Same view answers "who reads this PII column?".
 
 ## Demo Talking Points

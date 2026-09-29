@@ -3,6 +3,9 @@
 Snowflake demonstration project for the **Superintendency of Banks**, delivered through an
 OpenCode-driven automation strategy. Full architecture and guardrails are documented in
 [Architecture Documentation](../docs/snowflake-platform-demo/architecture.md).
+A complete object inventory of everything the automation provisions (infrastructure,
+data assets, AI models, governance policies) lives in
+[INVENTORY.md](../INVENTORY.md) at the repository root.
 
 ## Demo Sessions
 
