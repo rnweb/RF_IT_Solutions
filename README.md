@@ -84,7 +84,7 @@ Reusable, production-grade templates and infrastructure-as-code modules — incl
 
 [Browse Blueprints →](blueprints/README.md)
 
-The object-level inventory of the Snowflake Platform Demo — databases, schemas, warehouses, roles, data assets, AI models and governance policies — is maintained in [INVENTORY.md](INVENTORY.md).
+The object-level inventory of the Snowflake Platform Demo — databases, schemas, warehouses, roles, data assets, AI models and governance policies — is maintained in the [Snowflake_demo repository](https://github.com/rnweb/Snowflake_demo/blob/main/Demo/SB_Demo/INVENTORY.md), which hosts all Snowflake demos, POCs and tests.
 
 ---
 

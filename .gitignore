@@ -27,9 +27,3 @@ Thumbs.db
 # Environment
 .env
 *.env.local
-
-# Snowflake demo — cloned Quickstart repos (only README.md is tracked)
-snowflake-platform-demo/quickstarts/*/
-
-# Session 1 — generated synthetic CSVs (recreated by the loader script)
-snowflake-platform-demo/scripts/session-1-lakehouse/data/

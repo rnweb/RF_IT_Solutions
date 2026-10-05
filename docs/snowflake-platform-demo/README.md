@@ -27,6 +27,7 @@ weeks to days with a standardized, repeatable deployment.
 
 ## Project Assets
 
-Working files (SQL scripts, prompts, naming conventions, Quickstart clones) live in the
-[`snowflake-platform-demo/`](https://github.com/rnweb/RF_IT_Solutions/tree/main/snowflake-platform-demo)
-folder of the repository.
+Working files (SQL scripts, prompts, naming conventions, Quickstart clones) live in
+[`Demo/SB_Demo/`](https://github.com/rnweb/Snowflake_demo/tree/main/Demo/SB_Demo) of the
+[Snowflake_demo](https://github.com/rnweb/Snowflake_demo) repository — the home of all
+Snowflake demos, POCs and tests.
