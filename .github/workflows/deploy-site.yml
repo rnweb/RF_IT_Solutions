@@ -36,7 +36,7 @@ jobs:
         run: mkdocs build
 
       - name: Assemble site root (landing page + docs)
-        run: cp site-landing/index.html _site/index.html
+        run: cp site-landing/index.html site-landing/Logo_RFIT.png _site/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

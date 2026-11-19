@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Engineering Resilient Data Foundations and Enterprise-Scale AI Infrastructure.">
     <title>RF IT Solutions | Enterprise Architecture</title>
+    <link rel="icon" href="Logo_RFIT.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -46,17 +47,28 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.25rem 5%;
+            padding: 1rem 5%;
             max-width: 1200px;
             margin: 0 auto;
             gap: 1rem;
         }
 
         .logo {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--accent);
+            display: flex;
+            align-items: center;
             text-decoration: none;
+        }
+
+        .logo img {
+            height: 44px;
+            width: auto;
+            display: block;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
         }
 
         .nav-links {
@@ -74,6 +86,20 @@
         }
 
         .nav-links a:hover { color: var(--accent); }
+
+        .lang-toggle {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .lang-toggle:hover { background: rgba(100, 255, 218, 0.1); }
 
         .btn {
             display: inline-block;
@@ -109,6 +135,12 @@
             align-items: center;
             text-align: center;
             padding: 7rem 5% 4rem;
+        }
+
+        .hero-logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 2rem;
         }
 
         .eyebrow {
@@ -169,10 +201,8 @@
         .section-subtitle {
             text-align: center;
             color: var(--text-dark);
-            margin-bottom: 3rem;
+            margin: 0 auto 3rem;
             max-width: 720px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .principal-box {
@@ -275,9 +305,7 @@
             font-weight: 500;
         }
 
-        .cta {
-            text-align: center;
-        }
+        .cta { text-align: center; }
 
         .cta p {
             color: var(--text-dark);
@@ -293,6 +321,12 @@
             font-size: 0.9rem;
         }
 
+        footer img {
+            height: 36px;
+            width: auto;
+            margin-bottom: 0.75rem;
+        }
+
         footer a {
             color: var(--text-dark);
             text-decoration: none;
@@ -302,9 +336,11 @@
         footer a:hover { color: var(--accent); }
 
         @media (max-width: 768px) {
-            .nav-links { gap: 1rem; font-size: 0.9rem; }
-            .nav-links li:nth-child(n+4) { display: none; }
+            nav { flex-direction: column; gap: 0.75rem; }
+            .nav-right { gap: 1rem; }
+            .nav-links { gap: 1rem; font-size: 0.9rem; flex-wrap: wrap; justify-content: center; }
             .hero h1 { font-size: 2.2rem; }
+            .hero-logo { width: 140px; }
             section { padding: 4rem 5%; }
             .principal-box { padding: 1.75rem; }
         }
@@ -314,108 +350,244 @@
 
     <header>
         <nav>
-            <a href="#top" class="logo">RF IT Solutions</a>
-            <ul class="nav-links">
-                <li><a href="#principal">Leadership</a></li>
-                <li><a href="#capabilities">Capabilities</a></li>
-                <li><a href="#track-record">Track Record</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+            <a href="#top" class="logo">
+                <img src="Logo_RFIT.png" alt="RF IT Solutions">
+            </a>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="#principal" data-i18n="nav_leadership">Liderança</a></li>
+                    <li><a href="#capabilities" data-i18n="nav_capabilities">Capacidades</a></li>
+                    <li><a href="#track-record" data-i18n="nav_track">Histórico</a></li>
+                    <li><a href="#contact" data-i18n="nav_contact">Contato</a></li>
+                </ul>
+                <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()" aria-label="Switch language">EN</button>
+            </div>
         </nav>
     </header>
 
     <div class="hero" id="top">
-        <p class="eyebrow">Newly incorporated boutique consultancy</p>
-        <h1>Engineering Resilient Data Foundations and <span>Enterprise-Scale AI Infrastructure</span></h1>
-        <p class="lead">Principal-led execution across semantic layers, cloud and AI platforms, SRE observability, and data product governance, backed by 15+ years of mission-critical enterprise delivery.</p>
+        <img class="hero-logo" src="Logo_RFIT.png" alt="RF IT Solutions">
+        <p class="eyebrow" data-i18n="hero_eyebrow">Consultoria boutique recém-constituída</p>
+        <h1 data-i18n="hero_title">Engenharia de Fundações de Dados Resilientes e <span>Infraestrutura de IA em Escala Empresarial</span></h1>
+        <p class="lead" data-i18n="hero_lead">Execução liderada por Principais em camadas semânticas, plataformas de nuvem e IA, observabilidade SRE e governança de produtos de dados, com mais de 15 anos de entrega em missões críticas.</p>
         <div class="hero-actions">
-            <a href="docs/" class="btn btn-primary">Explore the Portfolio</a>
-            <a href="docs/services/engagement-model/" class="btn btn-outline">Our Engagement Model</a>
+            <a href="docs/" class="btn btn-primary" data-i18n="hero_cta_portfolio">Explore o Portfólio</a>
+            <a href="docs/services/engagement-model/" class="btn btn-outline" data-i18n="hero_cta_model">Nosso Modelo de Engajamento</a>
         </div>
     </div>
 
     <section id="principal">
-        <h2 class="section-title">Principal-Led Execution</h2>
-        <p class="section-subtitle">Clients work directly with the architects and product strategists who designed the systems.</p>
+        <h2 class="section-title" data-i18n="principal_title">Execução Liderada por Principais</h2>
+        <p class="section-subtitle" data-i18n="principal_subtitle">Os clientes trabalham diretamente com os arquitetos e estrategistas de produto que projetaram os sistemas.</p>
         <div class="principal-box">
-            <p>RF IT Solutions is a <strong>newly incorporated boutique consultancy</strong>, powered by over <strong>15 years of proven Principal Architecture and Product Leadership experience</strong>. We bring the agility and dedicated focus of a modern boutique, backed by a multi-decade track record of mission-critical enterprise execution.</p>
-            <p>Every engagement is Principal-led. Clients do not hire an agency. They hire the Principal Architect directly.</p>
+            <p data-i18n="principal_p1">A RF IT Solutions é uma <strong>consultoria boutique recém-constituída</strong>, apoiada por <strong>mais de 15 anos de experiência comprovada em Arquitetura de Princípios e Liderança de Produto</strong>. Trazemos a agilidade e o foco dedicado de uma boutique moderna, respaldados por um histórico de décadas em execução de missão crítica em empresas.</p>
+            <p data-i18n="principal_p2">Cada engajamento é liderado por um Principal. O cliente não contrata uma agência; ele contrata diretamente o Arquiteto Principal.</p>
         </div>
     </section>
 
     <section id="capabilities">
-        <h2 class="section-title">Core Capabilities</h2>
-        <p class="section-subtitle">End-to-end architecture, engineering, and product leadership for data and AI platforms.</p>
+        <h2 class="section-title" data-i18n="cap_title">Capacidades Principais</h2>
+        <p class="section-subtitle" data-i18n="cap_subtitle">Arquitetura, engenharia e liderança de produto de ponta a ponta para plataformas de dados e IA.</p>
         <div class="grid">
             <div class="card">
                 <span class="index">01</span>
-                <h3>Intelligent Semantic Layers</h3>
-                <p>Unify corporate metrics across silos without data movement. Virtualization-first architecture with AtScale and InterSystems IRIS.</p>
-                <a class="more" href="docs/services/semantic-layers/">Read more</a>
+                <h3 data-i18n="cap1_title">Camadas Semânticas Inteligentes</h3>
+                <p data-i18n="cap1_text">Unifique métricas corporativas entre silos sem movimentação de dados. Arquitetura com foco em virtualização, com AtScale e InterSystems IRIS.</p>
+                <a class="more" href="docs/services/semantic-layers/" data-i18n="more">Saiba mais</a>
             </div>
             <div class="card">
                 <span class="index">02</span>
-                <h3>Cloud &amp; AI Platform Architecture</h3>
-                <p>Secure, production-grade cloud environments on AWS and GCP, with Kubernetes (EKS), Argo CD GitOps delivery, and Terraform.</p>
-                <a class="more" href="docs/services/cloud-infra-ai/">Read more</a>
+                <h3 data-i18n="cap2_title">Arquitetura de Plataformas de Nuvem e IA</h3>
+                <p data-i18n="cap2_text">Ambientes de nuvem seguros e de nível produtivo na AWS e no GCP, com Kubernetes (EKS), entrega GitOps com Argo CD e Terraform.</p>
+                <a class="more" href="docs/services/cloud-infra-ai/" data-i18n="more">Saiba mais</a>
             </div>
             <div class="card">
                 <span class="index">03</span>
-                <h3>SRE &amp; Glass-Box Observability</h3>
-                <p>Telemetry frameworks with Datadog proxy architectures, distributed tracing, K6 performance auditing, and AI workload KPIs such as Time-to-First-Token.</p>
-                <a class="more" href="docs/services/sre-observability/">Read more</a>
+                <h3 data-i18n="cap3_title">SRE e Observabilidade Glass-Box</h3>
+                <p data-i18n="cap3_text">Frameworks de telemetria com arquiteturas de proxy Datadog, rastreamento distribuído, auditoria de performance com K6 e KPIs de cargas de IA, como Time-to-First-Token.</p>
+                <a class="more" href="docs/services/sre-observability/" data-i18n="more">Saiba mais</a>
             </div>
             <div class="card">
                 <span class="index">04</span>
-                <h3>Data Product &amp; Agile Governance</h3>
-                <p>Product lifecycle ownership from discovery and business case mapping to backlog serialization and sprint execution.</p>
-                <a class="more" href="docs/services/product-delivery-agile/">Read more</a>
+                <h3 data-i18n="cap4_title">Governança de Produtos de Dados e Ágil</h3>
+                <p data-i18n="cap4_text">Ownership do ciclo de vida do produto, da descoberta e mapeamento de casos de negócio à serialização do backlog e execução de sprints.</p>
+                <a class="more" href="docs/services/product-delivery-agile/" data-i18n="more">Saiba mais</a>
             </div>
         </div>
     </section>
 
     <section>
-        <h2 class="section-title">Operating Principles</h2>
-        <p class="section-subtitle">The standards behind every engagement.</p>
+        <h2 class="section-title" data-i18n="principles_title">Princípios Operacionais</h2>
+        <p class="section-subtitle" data-i18n="principles_subtitle">Os padrões por trás de cada engajamento.</p>
         <ul class="principles">
-            <li><strong>Architecture-as-Code.</strong> Every decision is captured in version-controlled artifacts.</li>
-            <li><strong>Default to Open.</strong> Open standards, open telemetry, and vendor-agnostic designs.</li>
-            <li><strong>Observability by Design.</strong> If it is not measured, it is not production-ready.</li>
-            <li><strong>Security First.</strong> Least privilege, policy-as-code, and automated secret rotation are non-negotiable.</li>
-            <li><strong>Pragmatic Innovation.</strong> Emerging technology is adopted only when it delivers clear, measurable advantage.</li>
+            <li data-i18n="principle1"><strong>Arquitetura como Código.</strong> Cada decisão é registrada em artefatos versionados.</li>
+            <li data-i18n="principle2"><strong>Padrões Abertos por Padrão.</strong> Padrões abertos, telemetria aberta e designs independentes de fornecedor.</li>
+            <li data-i18n="principle3"><strong>Observabilidade desde o Projeto.</strong> O que não é medido não está pronto para produção.</li>
+            <li data-i18n="principle4"><strong>Segurança em Primeiro Lugar.</strong> Menor privilégio, policy-as-code e rotação automatizada de segredos são inegociáveis.</li>
+            <li data-i18n="principle5"><strong>Inovação Pragmática.</strong> Tecnologias emergentes só são adotadas quando entregam vantagem clara e mensurável.</li>
         </ul>
     </section>
 
     <section id="track-record">
-        <h2 class="section-title">Sector Track Record</h2>
-        <p class="section-subtitle">Mission-critical programs across regulated industries, global logistics, and high-throughput consumer ecosystems. Client names are anonymized.</p>
+        <h2 class="section-title" data-i18n="track_title">Histórico por Setor</h2>
+        <p class="section-subtitle" data-i18n="track_subtitle">Programas de missão crítica em setores regulados, logística global e ecossistemas de consumo de alto volume. Os nomes dos clientes são anonimizados.</p>
         <ul class="sector-list">
-            <li>Global Supply Chain, Logistics &amp; Transportation</li>
-            <li>Banking, Financial Services &amp; Credit Processing</li>
-            <li>Enterprise Quick-Service Restaurants &amp; Consumer Retail</li>
-            <li>Global Database Systems, MedTech &amp; Healthcare Analytics</li>
-            <li>Consumer Appliances &amp; Industrial Manufacturing</li>
-            <li>Digital Commerce, Telecommunications &amp; E-Commerce</li>
+            <li data-i18n="sector1">Cadeia de Suprimentos Global, Logística e Transporte</li>
+            <li data-i18n="sector2">Bancos, Serviços Financeiros e Processamento de Crédito</li>
+            <li data-i18n="sector3">Redes de Quick-Service Restaurants e Varejo de Consumo</li>
+            <li data-i18n="sector4">Bancos de Dados Globais, MedTech e Análise em Saúde</li>
+            <li data-i18n="sector5">Eletrodomésticos e Manufatura Industrial</li>
+            <li data-i18n="sector6">Comércio Digital, Telecomunicações e E-Commerce</li>
         </ul>
         <p class="section-subtitle" style="margin-top: 2rem; margin-bottom: 0;">
-            <a href="docs/case-studies/ENTERPRISE_CASE_STUDIES/">Read the enterprise case studies</a>
+            <a href="docs/case-studies/ENTERPRISE_CASE_STUDIES/" data-i18n="track_link">Leia os estudos de caso corporativos</a>
         </p>
     </section>
 
     <section id="contact" class="cta">
-        <h2 class="section-title">Start a Conversation</h2>
-        <p>Share your architectural challenge. We respond with a Principal-level assessment.</p>
-        <a href="docs/" class="btn btn-primary">Visit the Documentation Site</a>
+        <h2 class="section-title" data-i18n="contact_title">Inicie uma Conversa</h2>
+        <p data-i18n="contact_text">Compartilhe o seu desafio arquitetural. Respondemos com uma avaliação em nível de Principal.</p>
+        <a href="docs/" class="btn btn-primary" data-i18n="contact_cta">Acesse o Site de Documentação</a>
     </section>
 
     <footer>
-        <p>&copy; 2026 RF IT Solutions. All rights reserved.</p>
+        <img src="Logo_RFIT.png" alt="RF IT Solutions">
+        <p>&copy; 2026 RF IT Solutions. <span data-i18n="footer_rights">Todos os direitos reservados.</span></p>
         <p style="margin-top: 0.5rem;">
-            <a href="docs/">Documentation</a>
-            <a href="docs/blueprints/">Blueprints</a>
+            <a href="docs/" data-i18n="footer_docs">Documentação</a>
+            <a href="docs/blueprints/" data-i18n="footer_blueprints">Blueprints</a>
             <a href="https://github.com/rnweb/RF_IT_Solutions">GitHub</a>
         </p>
     </footer>
 
+    <script>
+        const translations = {
+            pt: {
+                page_title: "RF IT Solutions | Arquitetura Empresarial",
+                nav_leadership: "Liderança",
+                nav_capabilities: "Capacidades",
+                nav_track: "Histórico",
+                nav_contact: "Contato",
+                hero_eyebrow: "Consultoria boutique recém-constituída",
+                hero_title: "Engenharia de Fundações de Dados Resilientes e <span>Infraestrutura de IA em Escala Empresarial</span>",
+                hero_lead: "Execução liderada por Principais em camadas semânticas, plataformas de nuvem e IA, observabilidade SRE e governança de produtos de dados, com mais de 15 anos de entrega em missões críticas.",
+                hero_cta_portfolio: "Explore o Portfólio",
+                hero_cta_model: "Nosso Modelo de Engajamento",
+                principal_title: "Execução Liderada por Principais",
+                principal_subtitle: "Os clientes trabalham diretamente com os arquitetos e estrategistas de produto que projetaram os sistemas.",
+                principal_p1: "A RF IT Solutions é uma <strong>consultoria boutique recém-constituída</strong>, apoiada por <strong>mais de 15 anos de experiência comprovada em Arquitetura de Princípios e Liderança de Produto</strong>. Trazemos a agilidade e o foco dedicado de uma boutique moderna, respaldados por um histórico de décadas em execução de missão crítica em empresas.",
+                principal_p2: "Cada engajamento é liderado por um Principal. O cliente não contrata uma agência; ele contrata diretamente o Arquiteto Principal.",
+                cap_title: "Capacidades Principais",
+                cap_subtitle: "Arquitetura, engenharia e liderança de produto de ponta a ponta para plataformas de dados e IA.",
+                cap1_title: "Camadas Semânticas Inteligentes",
+                cap1_text: "Unifique métricas corporativas entre silos sem movimentação de dados. Arquitetura com foco em virtualização, com AtScale e InterSystems IRIS.",
+                cap2_title: "Arquitetura de Plataformas de Nuvem e IA",
+                cap2_text: "Ambientes de nuvem seguros e de nível produtivo na AWS e no GCP, com Kubernetes (EKS), entrega GitOps com Argo CD e Terraform.",
+                cap3_title: "SRE e Observabilidade Glass-Box",
+                cap3_text: "Frameworks de telemetria com arquiteturas de proxy Datadog, rastreamento distribuído, auditoria de performance com K6 e KPIs de cargas de IA, como Time-to-First-Token.",
+                cap4_title: "Governança de Produtos de Dados e Ágil",
+                cap4_text: "Ownership do ciclo de vida do produto, da descoberta e mapeamento de casos de negócio à serialização do backlog e execução de sprints.",
+                more: "Saiba mais",
+                principles_title: "Princípios Operacionais",
+                principles_subtitle: "Os padrões por trás de cada engajamento.",
+                principle1: "<strong>Arquitetura como Código.</strong> Cada decisão é registrada em artefatos versionados.",
+                principle2: "<strong>Padrões Abertos por Padrão.</strong> Padrões abertos, telemetria aberta e designs independentes de fornecedor.",
+                principle3: "<strong>Observabilidade desde o Projeto.</strong> O que não é medido não está pronto para produção.",
+                principle4: "<strong>Segurança em Primeiro Lugar.</strong> Menor privilégio, policy-as-code e rotação automatizada de segredos são inegociáveis.",
+                principle5: "<strong>Inovação Pragmática.</strong> Tecnologias emergentes só são adotadas quando entregam vantagem clara e mensurável.",
+                track_title: "Histórico por Setor",
+                track_subtitle: "Programas de missão crítica em setores regulados, logística global e ecossistemas de consumo de alto volume. Os nomes dos clientes são anonimizados.",
+                sector1: "Cadeia de Suprimentos Global, Logística e Transporte",
+                sector2: "Bancos, Serviços Financeiros e Processamento de Crédito",
+                sector3: "Redes de Quick-Service Restaurants e Varejo de Consumo",
+                sector4: "Bancos de Dados Globais, MedTech e Análise em Saúde",
+                sector5: "Eletrodomésticos e Manufatura Industrial",
+                sector6: "Comércio Digital, Telecomunicações e E-Commerce",
+                track_link: "Leia os estudos de caso corporativos",
+                contact_title: "Inicie uma Conversa",
+                contact_text: "Compartilhe o seu desafio arquitetural. Respondemos com uma avaliação em nível de Principal.",
+                contact_cta: "Acesse o Site de Documentação",
+                footer_rights: "Todos os direitos reservados.",
+                footer_docs: "Documentação",
+                footer_blueprints: "Blueprints"
+            },
+            en: {
+                page_title: "RF IT Solutions | Enterprise Architecture",
+                nav_leadership: "Leadership",
+                nav_capabilities: "Capabilities",
+                nav_track: "Track Record",
+                nav_contact: "Contact",
+                hero_eyebrow: "Newly incorporated boutique consultancy",
+                hero_title: "Engineering Resilient Data Foundations and <span>Enterprise-Scale AI Infrastructure</span>",
+                hero_lead: "Principal-led execution across semantic layers, cloud and AI platforms, SRE observability, and data product governance, backed by 15+ years of mission-critical enterprise delivery.",
+                hero_cta_portfolio: "Explore the Portfolio",
+                hero_cta_model: "Our Engagement Model",
+                principal_title: "Principal-Led Execution",
+                principal_subtitle: "Clients work directly with the architects and product strategists who designed the systems.",
+                principal_p1: "RF IT Solutions is a <strong>newly incorporated boutique consultancy</strong>, powered by over <strong>15 years of proven Principal Architecture and Product Leadership experience</strong>. We bring the agility and dedicated focus of a modern boutique, backed by a multi-decade track record of mission-critical enterprise execution.",
+                principal_p2: "Every engagement is Principal-led. Clients do not hire an agency. They hire the Principal Architect directly.",
+                cap_title: "Core Capabilities",
+                cap_subtitle: "End-to-end architecture, engineering, and product leadership for data and AI platforms.",
+                cap1_title: "Intelligent Semantic Layers",
+                cap1_text: "Unify corporate metrics across silos without data movement. Virtualization-first architecture with AtScale and InterSystems IRIS.",
+                cap2_title: "Cloud & AI Platform Architecture",
+                cap2_text: "Secure, production-grade cloud environments on AWS and GCP, with Kubernetes (EKS), Argo CD GitOps delivery, and Terraform.",
+                cap3_title: "SRE & Glass-Box Observability",
+                cap3_text: "Telemetry frameworks with Datadog proxy architectures, distributed tracing, K6 performance auditing, and AI workload KPIs such as Time-to-First-Token.",
+                cap4_title: "Data Product & Agile Governance",
+                cap4_text: "Product lifecycle ownership from discovery and business case mapping to backlog serialization and sprint execution.",
+                more: "Read more",
+                principles_title: "Operating Principles",
+                principles_subtitle: "The standards behind every engagement.",
+                principle1: "<strong>Architecture-as-Code.</strong> Every decision is captured in version-controlled artifacts.",
+                principle2: "<strong>Default to Open.</strong> Open standards, open telemetry, and vendor-agnostic designs.",
+                principle3: "<strong>Observability by Design.</strong> If it is not measured, it is not production-ready.",
+                principle4: "<strong>Security First.</strong> Least privilege, policy-as-code, and automated secret rotation are non-negotiable.",
+                principle5: "<strong>Pragmatic Innovation.</strong> Emerging technology is adopted only when it delivers clear, measurable advantage.",
+                track_title: "Sector Track Record",
+                track_subtitle: "Mission-critical programs across regulated industries, global logistics, and high-throughput consumer ecosystems. Client names are anonymized.",
+                sector1: "Global Supply Chain, Logistics & Transportation",
+                sector2: "Banking, Financial Services & Credit Processing",
+                sector3: "Quick-Service Restaurants & Consumer Retail",
+                sector4: "Global Database Systems, MedTech & Healthcare Analytics",
+                sector5: "Consumer Appliances & Industrial Manufacturing",
+                sector6: "Digital Commerce, Telecommunications & E-Commerce",
+                track_link: "Read the enterprise case studies",
+                contact_title: "Start a Conversation",
+                contact_text: "Share your architectural challenge. We respond with a Principal-level assessment.",
+                contact_cta: "Visit the Documentation Site",
+                footer_rights: "All rights reserved.",
+                footer_docs: "Documentation",
+                footer_blueprints: "Blueprints"
+            }
+        };
+
+        // Default language is Portuguese; the visitor's choice is remembered.
+        let currentLang = localStorage.getItem('rfit-lang') || 'pt';
+
+        function applyLanguage() {
+            const dict = translations[currentLang];
+            document.documentElement.lang = currentLang === 'pt' ? 'pt-BR' : 'en';
+            document.title = dict.page_title;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key] !== undefined) {
+                    el.innerHTML = dict[key];
+                }
+            });
+
+            // Toggle button shows the language it will switch to.
+            document.getElementById('langToggle').textContent = currentLang === 'pt' ? 'EN' : 'PT';
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'pt' ? 'en' : 'pt';
+            localStorage.setItem('rfit-lang', currentLang);
+            applyLanguage();
+        }
+
+        applyLanguage();
+    </script>
 </body>
 </html>
