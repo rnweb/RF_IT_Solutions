@@ -32,8 +32,11 @@ jobs:
       - name: Install MkDocs Material
         run: pip install mkdocs-material
 
-      - name: Build MkDocs site
+      - name: Build MkDocs site (served under /docs/)
         run: mkdocs build
+
+      - name: Assemble site root (landing page + docs)
+        run: cp site-landing/index.html _site/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
